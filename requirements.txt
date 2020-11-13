@@ -23,7 +23,6 @@ blinker==1.4
 blosc==1.7.0
 Bottleneck==1.2.1
 breezy==3.0.2
-Brlapi==0.7.0
 cajarename==19.7.15
 cbor==1.0.0
 cdo==1.5.3
