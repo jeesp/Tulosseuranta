@@ -41,7 +41,6 @@ Cython==0.29.14
 dbfread==2.0.7
 dbus-python==1.2.16
 decorator==4.4.2
-defer==1.0.6
 defusedxml==0.6.0
 deja-dup-caja==0.0.6
 Deprecated==1.2.7
