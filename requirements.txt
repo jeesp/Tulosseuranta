@@ -36,7 +36,6 @@ constantly==15.1.0
 cryptography==2.8
 cssutils==1.0.2
 csvkit==1.0.2
-cupshelpers==1.0
 cycler==0.10.0
 Cython==0.29.14
 dask==2.8.1+dfsg
