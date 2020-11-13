@@ -42,7 +42,7 @@ def login():
     if check_password_hash(hash_value,password):
         a = 2
     else:
-        b = 2
+        return redirect("/")
         
     session["username"] = username
     return redirect("/")
