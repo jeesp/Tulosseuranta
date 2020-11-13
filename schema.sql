@@ -32,3 +32,9 @@ CREATE TABLE Arviot (
 	arvio INT,
 	UNIQUE (kayttaja_id, ottelu_id)
 );
+CREATE TABLE users (
+	id SERIAL PRIMARY KEY, 
+	username TEXT, 
+	password TEXT
+);
+
