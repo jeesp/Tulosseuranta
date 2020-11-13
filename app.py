@@ -40,10 +40,9 @@ def login():
     	hash_value = user[0]
     	
     if check_password_hash(hash_value,password):
-        a = "ei mitään"
-        b = 2
+        a = 2
     else:
-        return redirext("/", message="Väärä salis", items=words)
+        b = 2
         
     session["username"] = username
     return redirect("/")
@@ -54,12 +53,4 @@ def logout():
     del session["username"]
     return redirect("/")
     
-@app.route("/result")
-def result():
-    query = request.args["query"]
-    sql = "SELECT id, content FROM messages WHERE content LIKE :query"
-    result = db.session.execute(sql, {"query":"%"+query+"%"})
-    messages = result.fetchall()
-    return render_template("result.html",messages=messages)
-
 
