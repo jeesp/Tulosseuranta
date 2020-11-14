@@ -24,6 +24,7 @@ def signin():
     sql = "INSERT INTO users (username,password) VALUES (:username,:password)"
     db.session.execute(sql, {"username":username,"password":hash_value})
     db.session.commit()
+    session["newuser"] = 1
     return redirect("/")
     
 @app.route("/login",methods=["POST"])
@@ -40,8 +41,12 @@ def login():
     	hash_value = user[0]
     	
     if check_password_hash(hash_value,password):
-        a = 2
+        session["username"] = username
+        session["newuser"] = 1
+        session["wrong"] = 1
+        return render_template("result.html")
     else:
+        session["wrong"] = 1
         return redirect("/")
         
     session["username"] = username
@@ -50,7 +55,13 @@ def login():
 
 @app.route("/logout")
 def logout():
+    del session["newuser"]
+    del session["wrong"]   
     del session["username"]
     return redirect("/")
+
+@app.route("/result")
+def result():
+    query = request.form["query"]
     
 

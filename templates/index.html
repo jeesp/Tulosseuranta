@@ -3,6 +3,13 @@
 <a href="/logout">Kirjaudu ulos</a>
 {% else %}
 <form action="/login" method="POST">
+ {% if session.wrong %}
+ <p> Väärä salis <b>bro </b> </p>
+ {% endif %}
+ {% if session.newuser %}
+ <p> Voit kirjautua nyt sisään uudella tunnuksellasi</p>
+ {% endif %}
+
 <p>Tunnus:<br>
 <input type="text" name="username"></p>
 <p>Salasana:<br>
@@ -15,6 +22,7 @@
 <p>Uusi salasana:<br>
 <input type="password" name="password"></p>
 <input type="submit" value="Luo tunnus">
+
 </form>
 {% endif %}
 
