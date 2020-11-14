@@ -21,15 +21,21 @@ def signin():
     username = request.form["username"]
     password = request.form["password"]
     hash_value = generate_password_hash(password)
-    sql = "INSERT INTO users (username,password) VALUES (:username,:password)"
-    db.session.execute(sql, {"username":username,"password":hash_value})
-    db.session.commit()
+    try:
+        sql = "INSERT INTO users (username,password) VALUES (:username,:password)"
+        db.session.execute(sql, {"username":username,"password":hash_value})
+        db.session.commit()
+    except:
+        session["varattu"] = request.form["username"]
+        return render_template("newuser.html")
     session["newuser"] = 1
     return redirect("/")
 
 @app.route("/newuser",methods=["POST"])
 def newuser():
     return render_template("newuser.html")
+    
+    
     
 @app.route("/login",methods=["POST"])
 def login():
@@ -62,6 +68,7 @@ def logout():
     del session["newuser"]
     del session["wrong"]   
     del session["username"]
+    del session["varattu"]
     return redirect("/")
 
 @app.route("/result")

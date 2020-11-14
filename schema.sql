@@ -1,7 +1,7 @@
-CREATE TABLE Kayttajat (
+CREATE TABLE users (
 	id SERIAL PRIMARY KEY,
-    	tunnus TEXT UNIQUE,
-    	salasana TEXT,
+    	username TEXT UNIQUE,
+    	password TEXT,
 	admin INT
 );
 CREATE TABLE Joukkueet (
@@ -32,9 +32,3 @@ CREATE TABLE Arviot (
 	arvio INT,
 	UNIQUE (kayttaja_id, ottelu_id)
 );
-CREATE TABLE users (
-	id SERIAL PRIMARY KEY, 
-	username TEXT, 
-	password TEXT
-);
-

@@ -3,6 +3,10 @@
 <a href="/logout">Kirjaudu ulos</a>
 {% else %}
 
+{% if session.varattu %}
+<p>Käyttäjänimi {{ session.varattu }} varattu, valitse toinen man</p>
+{% endif %}
+
 <form action="/signin" method="POST">
 <p>Uusi tunnus:<br>
 <input type="text" name="username"></p>

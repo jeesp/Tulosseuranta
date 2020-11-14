@@ -9,6 +9,15 @@
  {% if session.newuser %}
  <p> Voit kirjautua nyt sisään uudella tunnuksellasi</p>
  {% endif %}
+ 
+ <script> 
+ try {
+  adddlert("Welcome guest!");
+}
+catch(err) {
+  document.getElementById("demo").innerHTML = err.message;
+} 
+</script>
 
 <p>Tunnus:<br>
 <input type="text" name="username"></p>
