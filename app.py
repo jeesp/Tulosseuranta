@@ -26,6 +26,10 @@ def signin():
     db.session.commit()
     session["newuser"] = 1
     return redirect("/")
+
+@app.route("/newuser",methods=["POST"])
+def newuser():
+    return render_template("newuser.html")
     
 @app.route("/login",methods=["POST"])
 def login():
