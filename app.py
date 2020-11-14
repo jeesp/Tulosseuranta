@@ -65,10 +65,8 @@ def login():
 
 @app.route("/logout")
 def logout():
-    del session["newuser"]
-    del session["wrong"]   
+
     del session["username"]
-    del session["varattu"]
     return redirect("/")
 
 @app.route("/result")
