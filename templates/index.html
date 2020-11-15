@@ -1,19 +1,31 @@
+
 {% if session.username %}
 <p>Olet kirjautunut nimellä {{ session.username }}</p>
 <a href="/logout">Kirjaudu ulos</a>
 {% else %}
 <form action="/login" method="POST">
+
+
+ {% for message in get_flashed_messages() %}
+        <p>{{ message }}</p>
+    {% endfor %}
+ 
+ <script> 
+ try {
+  adddlert("Welcome guest!");
+}
+catch(err) {
+  document.getElementById("demo").innerHTML = err.message;
+} 
+</script>
+
 <p>Tunnus:<br>
 <input type="text" name="username"></p>
 <p>Salasana:<br>
 <input type="password" name="password"></p>
 <input type="submit" value="Kirjaudu">
 </form>
-<form action="/signin" method="POST">
-<p>Uusi tunnus:<br>
-<input type="text" name="username"></p>
-<p>Uusi salasana:<br>
-<input type="password" name="password"></p>
+<form action ="/newuser" method="POST">
 <input type="submit" value="Luo tunnus">
 </form>
 {% endif %}
