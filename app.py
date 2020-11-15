@@ -51,10 +51,10 @@ def creatematch():
     joukkue2 = request.form["team2"]
     pisteet1 = request.form["team1points"]
     pisteet2 = request.form["team2points"]
-    if pisteet1 < 0 or pisteet1 > 10:
+    if int(pisteet1) < 0 or int(pisteet1) > 10:
         flash("Nyt vaikuttaa huijaukselta")
         return render_template("newmatch.html")
-    if pisteet2 < 0 or pisteet2 > 10:
+    if int(pisteet2) < 0 or int(pisteet2) > 10:
         flash("Nyt vaikuttaa huijaukselta")
         return render_template("newmatch.html")
 
@@ -81,23 +81,13 @@ def creatematch():
     result = db.session.execute(sql, {"userid":userid1})
     kayttajanjoukkue = result.fetchall() 
     if kayttajanjoukkue is None:
-        flash("Käyttäjän joukkuetta ei löydy")
+        flash("Syötä oman joukkueesi tulos man")
         return render_template("newmatch.html")
-
+    if team11 not in kayttajanjoukkue:
+        flash("Syötä oman joukkueesi tulos man")
+        return render_template("newmatch.html")
     team1 = team11[0]
     team2 = team22[0]
-
-    if team11 not in kayttajanjoukkue:
-        flash("jokin meni vikaan")
-        flash(team1)
-        flash(team2)
-        flash(pisteet1)
-        flash(pisteet2)
-        flash(team11)
-        flash(kayttajanjoukkue)
-        flash(userid1)
-        flash(user)
-        return render_template("newmatch.html")
 
     sql = "INSERT INTO ottelut (joukkue1_id,joukkue2_id,pisteet_koti,pisteet_vieras) VALUES (:joukkue1,:joukkue2,:pisteet1,:pisteet2)"
     db.session.execute(sql, {"joukkue1":team1,"joukkue2":team2,"pisteet1":pisteet1,"pisteet2":pisteet2})
@@ -143,8 +133,8 @@ def creatematch():
         db.session.commit()
         flash ("Hyvä matzi")
         return render_template("newmatch.html")
-    
     flash("Hmmm...?")
+    flash("Tasapeli...? Ratkaistaan sudden deathilla")
     return render_template("newmatch.html")
 
         
