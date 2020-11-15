@@ -19,6 +19,9 @@ TODO-lista:
 
 Käyttöohje
 
+https://tulosseuranta.herokuapp.com/
+
+
 Testaaja voi kokeilla lisätä uuden käyttäjätunnuksen, joukkueen ja ottelun. Alapuolelta voi käyttää myös valmiita tunnuksia.
 
 Valmiita käyttäjätunnuksia:
