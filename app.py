@@ -51,6 +51,13 @@ def creatematch():
     joukkue2 = request.form["team2"]
     pisteet1 = request.form["team1points"]
     pisteet2 = request.form["team2points"]
+    if pisteet1 < 0 or pisteet1 > 10:
+        flash("Nyt vaikuttaa huijaukselta")
+        return render_template("newmatch.html")
+    if pisteet2 < 0 or pisteet2 > 10:
+        flash("Nyt vaikuttaa huijaukselta")
+        return render_template("newmatch.html")
+
     sql = "SELECT id FROM joukkueet WHERE nimi=:nimi"
     result = db.session.execute(sql, {"nimi":joukkue1})
     team11 = result.fetchone()
@@ -112,6 +119,27 @@ def creatematch():
 
         sql = "UPDATE joukkueet SET haviot=:lisattyhavio WHERE id=:team2"
         db.session.execute(sql, {"lisattyhavio":lisattyhavio,"team2":team2})
+        db.session.commit()
+        flash ("Hyvä matzi")
+        return render_template("newmatch.html")
+
+    if pisteet1 < pisteet2:
+        sql = "SELECT voitot FROM joukkueet WHERE id=:team2"
+        result = db.session.execute(sql, {"team2":team2})
+        voitot = result.fetchone()
+        lisattyvoitto = voitot[0] + 1
+
+        sql = "SELECT haviot FROM joukkueet WHERE id=:team1"
+        result = db.session.execute(sql, {"team1":team1})
+        haviot = result.fetchone()
+        lisattyhavio = haviot[0] + 1
+
+        sql = "UPDATE joukkueet SET voitot=:lisattyvoitto WHERE id=:team2"
+        db.session.execute(sql, {"lisattyvoitto":lisattyvoitto,"team2":team2})
+        db.session.commit()
+
+        sql = "UPDATE joukkueet SET haviot=:lisattyhavio WHERE id=:team1"
+        db.session.execute(sql, {"lisattyhavio":lisattyhavio,"team1":team1})
         db.session.commit()
         flash ("Hyvä matzi")
         return render_template("newmatch.html")
