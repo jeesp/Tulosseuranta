@@ -1,14 +1,14 @@
+
 {% if session.username %}
 <p>Olet kirjautunut nimellä {{ session.username }}</p>
 <a href="/logout">Kirjaudu ulos</a>
 {% else %}
 <form action="/login" method="POST">
- {% if session.wrong %}
- <p> Väärä salis <b>bro </b> </p>
- {% endif %}
- {% if session.newuser %}
- <p> Voit kirjautua nyt sisään uudella tunnuksellasi</p>
- {% endif %}
+
+
+ {% for message in get_flashed_messages() %}
+        <p>{{ message }}</p>
+    {% endfor %}
  
  <script> 
  try {
@@ -25,8 +25,11 @@ catch(err) {
 <input type="password" name="password"></p>
 <input type="submit" value="Kirjaudu">
 </form>
-<form a href= "/newuser" action ="/newuser" method="POST">
+<form action ="/newuser" method="POST">
 <input type="submit" value="Luo tunnus">
+<input type="submit" value="Luo tunnasdasdasdfsdfsus">
+<
+<
 </form>
 {% endif %}
 

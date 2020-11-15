@@ -1,11 +1,12 @@
 {% if session.username %}
 <p>Olet kirjautunut nimellä {{ session.username }}</p>
+<p> gmmmmm? </p>
 <a href="/logout">Kirjaudu ulos</a>
 {% else %}
 
-{% if session.varattu %}
-<p>Käyttäjänimi {{ session.varattu }} varattu, valitse toinen man</p>
-{% endif %}
+{% for message in get_flashed_messages() %}
+        <p>{{ message }}</p>
+    {% endfor %}
 
 <form action="/signin" method="POST">
 <p>Uusi tunnus:<br>

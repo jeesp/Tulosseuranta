@@ -1,0 +1,25 @@
+{% if session.username %}
+<p>Olet kirjautunut nimellä {{ session.username }}</p>
+<a href="/logout">Kirjaudu ulos</a>
+<a href="/etusivu" >Etusivu</a>
+
+{% for message in get_flashed_messages() %}
+        <p>{{ message }}</p>
+    {% endfor %}
+
+<form action="/creatematch" method="POST">
+Joukkueesi nimi:
+<input type="text" name="team1"></p>
+Vastustajan joukkue:
+<input type="text" name="team2"></p>
+
+Lopputulos:
+Upottamanne mukit:
+<input type="number" name="team1points"></p>
+Toisen joukkueen upottamat mukit:
+<input type="number" name="team2points"></p>
+
+<input type="submit" value="Syötä tulos">
+</form>
+
+{% endif %}
