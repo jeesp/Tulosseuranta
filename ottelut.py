@@ -1,0 +1,84 @@
+from flask import Flask
+from flask import redirect, render_template, request, session, flash
+from os import getenv
+from werkzeug.security import check_password_hash, generate_password_hash
+from flask_sqlalchemy import SQLAlchemy
+from db import db
+from app import app
+
+def ottelupelattu(joukkue1,joukkue2,pisteet1,pisteet2):
+    sql = "SELECT id FROM joukkueet WHERE nimi=:nimi"
+    result = db.session.execute(sql, {"nimi":joukkue1})
+    team1sql = result.fetchone()
+    sql = "SELECT id FROM joukkueet WHERE nimi=:nimi"
+    result = db.session.execute(sql, {"nimi":joukkue2})
+    team2sql = result.fetchone()
+    if team1sql is None:
+        flash("Ensimmäistä joukkuetta ei löydy")
+    if team2sql is None:
+        flash("Toista joukkuetta ei löydy")
+    if team1sql == team2sql:
+        flash("Ei voi pelata itseään vastaan man")
+    if team1sql is None or team2sql is None or team1sql == team2sql:
+        return False
+    userid = session["user_id"]
+
+    sql = "SELECT joukkue_id FROM joukkueidenpelaajat WHERE jasen_id=:userid"
+    result = db.session.execute(sql, {"userid":userid})
+    kayttajanjoukkue = result.fetchall() 
+    if kayttajanjoukkue is None:
+        flash("Käyttäjä ei kuulu mihinkään joukkueeseen")
+        return False
+    if team1sql not in kayttajanjoukkue:
+        flash("Syötä oman joukkueesi tulos man")
+        return False
+    team1 = team1sql[0]
+    team2 = team2sql[0]
+
+    sql = "INSERT INTO ottelut (joukkue1_id,joukkue2_id,pisteet_koti,pisteet_vieras) VALUES (:joukkue1,:joukkue2,:pisteet1,:pisteet2)"
+    db.session.execute(sql, {"joukkue1":team1,"joukkue2":team2,"pisteet1":pisteet1,"pisteet2":pisteet2})
+    db.session.commit()
+    if pisteet1 > pisteet2:
+        sql = "SELECT voitot FROM joukkueet WHERE id=:team1"
+        result = db.session.execute(sql, {"team1":team1})
+        voitot = result.fetchone()
+        lisattyvoitto = voitot[0] + 1
+
+        sql = "SELECT haviot FROM joukkueet WHERE id=:team2"
+        result = db.session.execute(sql, {"team2":team2})
+        haviot = result.fetchone()
+        lisattyhavio = haviot[0] + 1
+
+        sql = "UPDATE joukkueet SET voitot=:lisattyvoitto WHERE id=:team1"
+        db.session.execute(sql, {"lisattyvoitto":lisattyvoitto,"team1":team1})
+        db.session.commit()
+
+        sql = "UPDATE joukkueet SET haviot=:lisattyhavio WHERE id=:team2"
+        db.session.execute(sql, {"lisattyhavio":lisattyhavio,"team2":team2})
+        db.session.commit()
+        flash ("Hyvä matzi")
+        return render_template("newmatch.html")
+
+    if pisteet1 < pisteet2:
+        sql = "SELECT voitot FROM joukkueet WHERE id=:team2"
+        result = db.session.execute(sql, {"team2":team2})
+        voitot = result.fetchone()
+        lisattyvoitto = voitot[0] + 1
+
+        sql = "SELECT haviot FROM joukkueet WHERE id=:team1"
+        result = db.session.execute(sql, {"team1":team1})
+        haviot = result.fetchone()
+        lisattyhavio = haviot[0] + 1
+
+        sql = "UPDATE joukkueet SET voitot=:lisattyvoitto WHERE id=:team2"
+        db.session.execute(sql, {"lisattyvoitto":lisattyvoitto,"team2":team2})
+        db.session.commit()
+
+        sql = "UPDATE joukkueet SET haviot=:lisattyhavio WHERE id=:team1"
+        db.session.execute(sql, {"lisattyhavio":lisattyhavio,"team1":team1})
+        db.session.commit()
+        flash ("Hyvä matzi")
+        return render_template("newmatch.html")
+    flash("Hmmm...?")
+    flash("Tasapeli...? Ratkaistaan sudden deathilla")
+    return True

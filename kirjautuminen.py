@@ -22,7 +22,10 @@ def tarkistus(username, password):
         else:
             flash("Väärä salis bro")
             return False
-            
+
+def user_id():
+    return session.get("user_id",0)
+
 def uusikayttaja(username,password):
     hash_value = generate_password_hash(password)
     sql = "SELECT username FROM users WHERE username=:username"
