@@ -1,6 +1,6 @@
 <p>Etusivu</p>
-{% if session.username %}
-<p>Olet kirjautunut nimellä {{ session.username }}</p>
+{% if session.user_id %}
+<p>Olet kirjautunut nimellä {{ session.user_id }}</p>
 <a href="/logout">Kirjaudu ulos</a>
 
 {% for message in get_flashed_messages() %}
