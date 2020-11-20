@@ -151,7 +151,7 @@ def login():
             flash("Tyhjä kenttä")
             return render_template("login.html")
         if kirjautuminen.tarkistus(username,password):
-            return render_template("index.html")
+            return redirect("/")
         else:
             return render_template("login.html")
 
