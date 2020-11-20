@@ -1,32 +1,28 @@
-
-{% if session.username %}
-<p>Olet kirjautunut nimellä {{ session.username }}</p>
-<a href="/logout">Kirjaudu ulos</a>
-{% else %}
-<form action="/login" method="POST">
-
-
- {% for message in get_flashed_messages() %}
+<p>Etusivu</p>
+{% for message in get_flashed_messages() %}
         <p>{{ message }}</p>
     {% endfor %}
- 
- <script> 
- try {
-  adddlert("Welcome guest!");
-}
-catch(err) {
-  document.getElementById("demo").innerHTML = err.message;
-} 
-</script>
+{% if session.user_id %}
+    <p>Olet kirjautunut nimellä {{ session.user_id }}</p>
+    <a href="/logout">Kirjaudu ulos</a>
 
-<p>Tunnus:<br>
-<input type="text" name="username"></p>
-<p>Salasana:<br>
-<input type="password" name="password"></p>
-<input type="submit" value="Kirjaudu">
-</form>
-<form action ="/newuser" method="POST">
-<input type="submit" value="Luo tunnus">
-</form>
+    <form action ="/newteam" method="POST">
+        <input type="submit" value="Luo joukkue">
+    </form>
+    <form action ="/newmatch" method="POST">
+        <input type="submit" value="Merkitse ottelu">
+    </form>
+    <form action ="/highscoreteam" method="POST">
+        <input type="submit" value="Näytä parhaat joukkueet">
+    </form>
+    <form action ="/highscoreplayer" method="POST">
+        <input type="submit" value="Näytä parhaat pelaajat">
+    </form>
+{% else %}
+    <form action ="/login" method="GET">
+        <input type="submit" value="Kirjaudu sisään">
+    </form>
+
 {% endif %}
+
 

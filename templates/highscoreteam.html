@@ -1,0 +1,15 @@
+{% if session.user_id %}
+<h1>Hall of fame</h1>
+<hr>
+<p>Joukkue | Voitot | Häviöt | KD-Ratio</p>
+{% for joukkue in joukkueet %}
+<p> {{ joukkue[0] }} | {{ joukkue[1] }} | {{ joukkue[2] }} | {{ joukkue[3] }} |</p>
+
+{% endfor %}
+<a href="/lowscoreteam">Näytä sittenkin huonoimmat?</a>
+<hr>
+<a href="/logout">Kirjaudu ulos</a>
+<a href="/etusivu" >Etusivu</a>
+{% else %}
+<a href="/login">Kirjaudu sisään</a>
+{% endif %}
