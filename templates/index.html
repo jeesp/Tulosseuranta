@@ -1,32 +1,55 @@
-
-{% if session.username %}
-<p>Olet kirjautunut nimellä {{ session.username }}</p>
-<a href="/logout">Kirjaudu ulos</a>
-{% else %}
-<form action="/login" method="POST">
-
-
- {% for message in get_flashed_messages() %}
+<p>Etusivu</p>
+{% for message in get_flashed_messages() %}
         <p>{{ message }}</p>
     {% endfor %}
- 
- <script> 
- try {
-  adddlert("Welcome guest!");
-}
-catch(err) {
-  document.getElementById("demo").innerHTML = err.message;
-} 
-</script>
+{% if session.user_id %}
+    <p>Olet kirjautunut nimellä {{ session.user_id }}</p>
+    <a href="/logout">Kirjaudu ulos</a>
 
-<p>Tunnus:<br>
-<input type="text" name="username"></p>
-<p>Salasana:<br>
-<input type="password" name="password"></p>
-<input type="submit" value="Kirjaudu">
-</form>
-<form action ="/newuser" method="POST">
-<input type="submit" value="Luo tunnus">
-</form>
+    <form action ="/newteam" method="POST">
+        <input type="submit" value="Luo joukkue">
+    </form>
+    <form action ="/newmatch" method="POST">
+        <input type="submit" value="Merkitse ottelu">
+    </form>
+    <form action ="/highscoreteam" method="POST">
+        <input type="submit" value="Näytä parhaat joukkueet">
+    </form>
+    <form action ="/highscoreplayer" method="POST">
+        <input type="submit" value="Näytä parhaat pelaajat">
+    </form>
+    <hr>
+    <h3>Kolme uusinta ottelua</h3>
+    {% for ottelu in ottelut %}
+    <i>Kotijoukkue: </i> {{ ottelu[0] }}
+    <p>
+    <i>Vierasjoukkue: </i> {{ ottelu[1] }}
+    <p>
+    <i>Kotijoukkueen pisteet: </i> {{ ottelu[2] }}
+    <p>
+    <i>Vierasjoukkueem pisteet: </i> {{ ottelu[3] }}
+    <p>
+    <i>Pelattu:</i> {{ ottelu[4].strftime("%Y-%m-%d %H:%M:%S") }}
+    <form action ="/naytakommentit" method="POST">
+        <input type="hidden" name="id" value="{{ ottelu[5] }}">
+        <input type="submit" value="Näytä {{ ottelu[5] }}. ottelun kommentit">
+    </form>
+    <hr>
+    {% endfor %}
+    <form action ="/naytaottelut" method="GET">
+        <input type="submit" value="Näytä kaikki ottelut">
+    </form>
+    {% if session.user_id %}
+    Olet kirjautunut sisään.
+    <a href="/logout">Kirjaudu ulos</a>
+    {% else %}
+    <a href="/login">Kirjaudu sisään</a>
+    {% endif %}
+{% else %}
+    <form action ="/login" method="GET">
+        <input type="submit" value="Kirjaudu sisään">
+    </form>
+
 {% endif %}
+
 

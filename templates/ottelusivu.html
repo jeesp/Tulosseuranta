@@ -1,0 +1,42 @@
+{% if session.user_id %}
+Olet kirjautunut sisään.
+<a href="/">Etusivu</a> | <a href="/logout">Kirjaudu ulos</a>
+<hr>
+<h1>Ottelu {{ ottelu[0] }} vs  {{ ottelu[1] }}</h1>
+
+<i>Kotijoukkue: </i> {{ ottelu[0] }}
+    <p>
+    <i>Vierasjoukkue: </i> {{ ottelu[1] }}
+    <p>
+    <i>Kotijoukkueen pisteet: </i> {{ ottelu[2] }}
+    <p>
+    <i>Vierasjoukkueen pisteet: </i> {{ ottelu[3] }}
+    <p>
+    <i>Pelattu:</i> {{ ottelu[4].strftime("%Y") }}
+    <hr>
+    {% for message in get_flashed_messages() %}
+        <p><b>{{ message }}</b></p>
+    {% endfor %}
+    <form action ="/lisaakommentti" method="POST">
+        <input type="text" name="viesti"></p>
+        <input type="hidden" name="id" value="{{ ottelu[5] }}">
+        <input type="submit" value="Kommentoi ottelua">
+    </form>
+    <h3>Viestit</h3>
+    {% for viesti in viestit %}
+    <i><b>Viesti:</b></i> {{ viesti[0] }}
+    <p>
+    <i><b>Lähettäjä:</b></i> {{ viesti[1] }}
+    <p>
+    <i><b>Aika:</b></i> {{ viesti[2].strftime("%Y-%m-%d %H:%M:%S") }}
+    <hr>
+    {% endfor %}
+    
+    
+
+{% else %}
+    <form action ="/login" method="GET">
+        <input type="submit" value="Kirjaudu sisään">
+    </form>
+
+{% endif %}

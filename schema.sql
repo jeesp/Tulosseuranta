@@ -20,7 +20,8 @@ CREATE TABLE Ottelut (
 	joukkue1_id INT REFERENCES Joukkueet,
 	joukkue2_id INT REFERENCES Joukkueet,
 	pisteet_koti INT,
-	pisteet_vieras INT
+	pisteet_vieras INT,
+	ajankohta TIMESTAMP
 );
 CREATE TABLE kommentit (
    	id SERIAL PRIMARY KEY,

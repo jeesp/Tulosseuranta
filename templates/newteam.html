@@ -1,5 +1,4 @@
-{% if session.username %}
-<p>Olet kirjautunut nimellä {{ session.username }}</p>
+{% if session.user_id %}
 <a href="/logout">Kirjaudu ulos</a>
 <a href="/etusivu" >Etusivu</a>
 
@@ -16,6 +15,4 @@ Joukkueen pelaajien käyttäjänimet:
 
 <input type="submit" value="Luo joukkue">
 </form>
-
 {% endif %}
-
