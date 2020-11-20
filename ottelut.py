@@ -35,7 +35,7 @@ def ottelupelattu(joukkue1,joukkue2,pisteet1,pisteet2):
     team1 = team1sql[0]
     team2 = team2sql[0]
 
-    sql = "INSERT INTO ottelut (joukkue1_id,joukkue2_id,pisteet_koti,pisteet_vieras) VALUES (:joukkue1,:joukkue2,:pisteet1,:pisteet2)"
+    sql = "INSERT INTO ottelut (joukkue1_id,joukkue2_id,pisteet_koti,pisteet_vieras, ajankohta) VALUES (:joukkue1,:joukkue2,:pisteet1,:pisteet2, NOW())"
     db.session.execute(sql, {"joukkue1":team1,"joukkue2":team2,"pisteet1":pisteet1,"pisteet2":pisteet2})
     db.session.commit()
     if pisteet1 > pisteet2:
@@ -57,7 +57,7 @@ def ottelupelattu(joukkue1,joukkue2,pisteet1,pisteet2):
         db.session.execute(sql, {"lisattyhavio":lisattyhavio,"team2":team2})
         db.session.commit()
         flash ("Hyvä matzi")
-        return render_template("newmatch.html")
+        return True
 
     if pisteet1 < pisteet2:
         sql = "SELECT voitot FROM joukkueet WHERE id=:team2"
@@ -78,7 +78,19 @@ def ottelupelattu(joukkue1,joukkue2,pisteet1,pisteet2):
         db.session.execute(sql, {"lisattyhavio":lisattyhavio,"team1":team1})
         db.session.commit()
         flash ("Hyvä matzi")
-        return render_template("newmatch.html")
+        return True
     flash("Hmmm...?")
     flash("Tasapeli...? Ratkaistaan sudden deathilla")
     return True
+def Ottelut():
+    sql = "SELECT J.nimi, T.nimi, O.pisteet_koti, O.pisteet_vieras, O.ajankohta, O.id FROM Joukkueet J, Joukkueet T,Ottelut O WHERE O.joukkue1_id=J.id AND O.joukkue2_id=T.id ORDER BY O.ajankohta DESC"
+    result = db.session.execute(sql)
+    return result.fetchall()
+def kolmeuusintaottelua():
+    sql = "SELECT J.nimi, T.nimi, O.pisteet_koti, O.pisteet_vieras, O.ajankohta, O.id FROM Joukkueet J, Joukkueet T,Ottelut O WHERE O.joukkue1_id=J.id AND O.joukkue2_id=T.id ORDER BY O.ajankohta DESC LIMIT 3"
+    result = db.session.execute(sql)
+    return result.fetchall()
+def haeOttelu(id):
+    sql = "SELECT J.nimi, T.nimi, O.pisteet_koti, O.pisteet_vieras, O.ajankohta, O.id FROM Joukkueet J, Joukkueet T,Ottelut O WHERE O.id=:id AND O.joukkue1_id=J.id AND O.joukkue2_id=T.id ORDER BY O.ajankohta DESC"
+    result = db.session.execute(sql, {"id":id})
+    return result.fetchone()

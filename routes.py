@@ -5,11 +5,17 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from db import db
 from app import app
-import kirjautuminen, joukkueet, ottelut, highscore
+import kirjautuminen, joukkueet, ottelut, highscore, viestit
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    list = ottelut.kolmeuusintaottelua()
+    return render_template("index.html", ottelut=list)
+
+@app.route("/naytaottelut")
+def naytaottelut():
+    list = ottelut.Ottelut()
+    return render_template("kaikkiottelut.html", ottelut=list)
 
 @app.route("/signin",methods=["GET","POST"])
 def signin():
@@ -18,6 +24,12 @@ def signin():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        if username == "" or password == "":
+            flash("Tyhjä kenttä")
+            return render_template("newuser.html")
+        if len(password) < 4:
+            flash ("Salasana liian lyhyt, pitää olla vähintään 4 merkkiä.")
+            return render_template("newuser.html")
         if kirjautuminen.uusikayttaja(username,password):
             return redirect("/")
         else:
@@ -30,6 +42,35 @@ def newuser():
 @app.route("/etusivu",methods=["GET","POST"])
 def etusivu():
     return render_template("index.html")
+
+@app.route("/naytakommentit",methods=["GET","POST"])
+def naytakommentit():
+    if request.method == "GET":
+        return redirect("/")
+    if request.method == "POST":
+        otteluid = request.form["id"]
+        ottelu = ottelut.haeOttelu(otteluid)
+        list = viestit.OttelunViestit(otteluid)
+        return render_template("ottelusivu.html", ottelu=ottelu, viestit=list)
+
+@app.route("/lisaakommentti", methods=["GET","POST"])
+def lisakommentti():
+    if request.method == "GET":
+        return redirect("/")
+    if request.method == "POST":
+        viesti = request.form["viesti"]
+        otteluid = request.form["id"]
+        if viestit.LahetaViesti(otteluid,viesti):
+            flash("Kommentti lisätty")
+            ottelu = ottelut.haeOttelu(otteluid)
+            list = viestit.OttelunViestit(otteluid)
+            return render_template("ottelusivu.html", ottelu=ottelu, viestit=list)
+        else:
+            flash("Viestin lähetys epäonnistui")
+            ottelu = ottelut.haeOttelu(otteluid)
+            list = viestit.OttelunViestit(otteluid)
+            return render_template("ottelusivu.html", ottelu=ottelu, viestit=list)
+
 
 @app.route("/newteam",methods=["GET", "POST"])
 def newteam():
@@ -50,7 +91,7 @@ def creatematch():
         joukkue2 = request.form["team2"]
         pisteet1 = request.form["team1points"]
         pisteet2 = request.form["team2points"]
-        if joukkue1 is "" or joukkue2 is "" or pisteet1 is "" or pisteet2 is "":
+        if joukkue1 == "" or joukkue2 == "" or pisteet1 == "" or pisteet2 == "":
             flash("Jokin kenttä oli tyhjä.")
             return render_template("newmatch.html") 
         if int(pisteet1) < 0 or int(pisteet1) > 10 or int(pisteet2) < 0 or int(pisteet2) > 10:
@@ -58,7 +99,8 @@ def creatematch():
             return render_template("newmatch.html")
         
         if ottelut.ottelupelattu(joukkue1,joukkue2,pisteet1,pisteet2):
-            return render_template("index.html")
+
+            return redirect("/")
         else:
             return render_template("newmatch.html")
 
@@ -70,7 +112,7 @@ def createteam():
         username1 = request.form["username1"]
         username2 = request.form["username2"]
         team = request.form["team"]
-        if username1 is "" or username2 is "" or team is "":
+        if username1 == "" or username2 == "" or team == "":
             flash("Kenttä tyhjä")
             return render_template("newteam.html")
         if joukkueet.createteam(username1,username2,team):
@@ -105,6 +147,9 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        if username == "" or password == "":
+            flash("Tyhjä kenttä")
+            return render_template("login.html")
         if kirjautuminen.tarkistus(username,password):
             return render_template("index.html")
         else:

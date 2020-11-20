@@ -18,6 +18,33 @@
     <form action ="/highscoreplayer" method="POST">
         <input type="submit" value="Näytä parhaat pelaajat">
     </form>
+    <hr>
+    <h3>Kolme uusinta ottelua</h3>
+    {% for ottelu in ottelut %}
+    <i>Kotijoukkue: </i> {{ ottelu[0] }}
+    <p>
+    <i>Vierasjoukkue: </i> {{ ottelu[1] }}
+    <p>
+    <i>Kotijoukkueen pisteet: </i> {{ ottelu[2] }}
+    <p>
+    <i>Vierasjoukkueem pisteet: </i> {{ ottelu[3] }}
+    <p>
+    <i>Pelattu:</i> {{ ottelu[4].strftime("%Y-%m-%d %H:%M:%S") }}
+    <form action ="/naytakommentit" method="POST">
+        <input type="hidden" name="id" value="{{ ottelu[5] }}">
+        <input type="submit" value="Näytä {{ ottelu[5] }}. ottelun kommentit">
+    </form>
+    <hr>
+    {% endfor %}
+    <form action ="/naytaottelut" method="GET">
+        <input type="submit" value="Näytä kaikki ottelut">
+    </form>
+    {% if session.user_id %}
+    Olet kirjautunut sisään.
+    <a href="/new">Lähetä viesti</a> | <a href="/logout">Kirjaudu ulos</a>
+    {% else %}
+    <a href="/login">Kirjaudu sisään</a>
+    {% endif %}
 {% else %}
     <form action ="/login" method="GET">
         <input type="submit" value="Kirjaudu sisään">
