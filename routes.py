@@ -5,7 +5,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from db import db
 from app import app
-import kirjautuminen, joukkueet, ottelut, highscore, viestit
+import kirjautuminen, joukkueet, ottelut, highscore, viestit, arviot
 
 @app.route("/")
 def index():
@@ -43,34 +43,33 @@ def newuser():
 def etusivu():
     return render_template("index.html")
 
-@app.route("/naytakommentit",methods=["GET","POST"])
-def naytakommentit():
+@app.route("/ottelu/<int:otteluid>",methods=["GET","POST"])
+def ottelu(otteluid):
     if request.method == "GET":
         return redirect("/")
     if request.method == "POST":
-        otteluid = request.form["id"]
-        ottelu = ottelut.haeOttelu(otteluid)
-        list = viestit.OttelunViestit(otteluid)
-        return render_template("ottelusivu.html", ottelu=ottelu, viestit=list)
+        list = ottelut.paivitaOttelusivu(otteluid)
+        return render_template("ottelusivu.html", ottelu=list[0], viestit=list[1], arviot=list[2])
 
-@app.route("/lisaakommentti", methods=["GET","POST"])
-def lisakommentti():
+@app.route("/ottelu/<int:otteluid>/lisaakommentti", methods=["GET","POST"])
+def lisakommentti(otteluid):
     if request.method == "GET":
         return redirect("/")
     if request.method == "POST":
         viesti = request.form["viesti"]
-        otteluid = request.form["id"]
-        if viestit.LahetaViesti(otteluid,viesti):
-            flash("Kommentti lisätty")
-            ottelu = ottelut.haeOttelu(otteluid)
-            list = viestit.OttelunViestit(otteluid)
-            return render_template("ottelusivu.html", ottelu=ottelu, viestit=list)
-        else:
-            flash("Viestin lähetys epäonnistui")
-            ottelu = ottelut.haeOttelu(otteluid)
-            list = viestit.OttelunViestit(otteluid)
-            return render_template("ottelusivu.html", ottelu=ottelu, viestit=list)
+        viestit.LahetaViesti(otteluid,viesti)
+        list = ottelut.paivitaOttelusivu(otteluid)
+        return render_template("ottelusivu.html", ottelu=list[0], viestit=list[1], arviot=list[2])
 
+@app.route("/ottelu/<int:otteluid>/lisaaArvio", methods=["GET","POST"])
+def lisaaArvio(otteluid):
+    if request.method == "GET":
+        return redirect("/")
+    if request.method == "POST":
+        arvio = request.form["arvio"]
+        arviot.LisaaArvio(kirjautuminen.user_id(),otteluid, arvio)
+        list = ottelut.paivitaOttelusivu(otteluid)
+        return render_template("ottelusivu.html", ottelu=list[0], viestit=list[1], arviot=list[2])
 
 @app.route("/newteam",methods=["GET", "POST"])
 def newteam():
@@ -158,6 +157,8 @@ def login():
 @app.route("/logout")
 def logout():
     flash ("Hate to see you leave")
+    if kirjautuminen.is_admin(session["user_id"]):
+        del session["admin"]
     del session["user_id"]
     return redirect("/")
 

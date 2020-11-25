@@ -3,7 +3,8 @@ Olet kirjautunut sisään.
 <a href="/">Etusivu</a> | <a href="/logout">Kirjaudu ulos</a>
 <hr>
 <h1>Ottelu {{ ottelu[0] }} vs  {{ ottelu[1] }}</h1>
-
+<p>Yläpeukut: {{ arviot[0] }} </p>
+<p>Alapeukut: {{ arviot[1] }} </p>
 <i>Kotijoukkue: </i> {{ ottelu[0] }}
     <p>
     <i>Vierasjoukkue: </i> {{ ottelu[1] }}
@@ -17,9 +18,21 @@ Olet kirjautunut sisään.
     {% for message in get_flashed_messages() %}
         <p><b>{{ message }}</b></p>
     {% endfor %}
-    <form action ="/lisaakommentti" method="POST">
+    <form action ="/ottelu/{{ ottelu[5] }}/lisaaArvio" method="POST">
+        <input type="hidden" name="otteluid" value="{{ ottelu[5] }}">
+        <input type="hidden" name="arvio" value="1">
+        <input type="submit" value="Anna yläpeukku bro">
+    </form>
+    
+    <form action ="/ottelu/{{ ottelu[5] }}/lisaaArvio" method="POST">
+        <input type="hidden" name="otteluid" value="{{ ottelu[5] }}">
+        <input type="hidden" name="arvio" value="0">
+        <input type="submit" value="Huono peli bro">
+    </form>
+
+    <form action ="/ottelu/{{ ottelu[5] }}/lisaakommentti" method="POST">
         <input type="text" name="viesti"></p>
-        <input type="hidden" name="id" value="{{ ottelu[5] }}">
+        <input type="hidden" name="otteluid" value="{{ ottelu[5] }}">
         <input type="submit" value="Kommentoi ottelua">
     </form>
     <h3>Viestit</h3>

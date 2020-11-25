@@ -17,7 +17,8 @@ def tarkistus(username, password):
         if check_password_hash(user[0],password):
             session["user_id"] = user[1]
             flash ("Tervetuloa!")
-
+            if is_admin(user[1]):
+                session["admin"] = True
             return True
         else:
             flash("Väärä salis bro")
@@ -25,6 +26,15 @@ def tarkistus(username, password):
 
 def user_id():
     return session.get("user_id",0)
+
+def is_admin(id):
+    sql = "SELECT admin FROM users WHERE id=:id"
+    result = db.session.execute(sql, {"id":id})
+    admin = result.fetchone()[0]
+    if admin == 1:
+        return True
+    else:
+        return False
 
 def uusikayttaja(username,password):
     hash_value = generate_password_hash(password)

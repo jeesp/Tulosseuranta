@@ -5,6 +5,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from db import db
 from app import app
+import viestit, arviot
 
 def ottelupelattu(joukkue1,joukkue2,pisteet1,pisteet2):
     sql = "SELECT id FROM joukkueet WHERE nimi=:nimi"
@@ -94,3 +95,9 @@ def haeOttelu(id):
     sql = "SELECT J.nimi, T.nimi, O.pisteet_koti, O.pisteet_vieras, O.ajankohta, O.id FROM Joukkueet J, Joukkueet T,Ottelut O WHERE O.id=:id AND O.joukkue1_id=J.id AND O.joukkue2_id=T.id ORDER BY O.ajankohta DESC"
     result = db.session.execute(sql, {"id":id})
     return result.fetchone()
+def paivitaOttelusivu(otteluid):
+    ottelu = haeOttelu(otteluid)
+    viestilista = viestit.OttelunViestit(otteluid)
+    arviolista = arviot.OttelunArviot(otteluid)
+    return ottelu, viestilista, arviolista
+
