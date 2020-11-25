@@ -7,7 +7,7 @@
 <p>testitesti</p>
 {% endif %}
 
-    <p>Olet kirjautunut nimellä {{ session.user_id }}</p>
+    <p>Olet kirjautunut nimellä {{ session.username }}</p>
     <a href="/logout">Kirjaudu ulos</a>
 
     <form action ="/newteam" method="POST">
@@ -23,7 +23,7 @@
         <input type="submit" value="Näytä parhaat pelaajat">
     </form>
     <hr>
-    <h3>Kolme uusinta ottelua</h3>
+    <h3>Kolme parasta ottelua</h3>
     {% for ottelu in ottelut %}
     <i>Kotijoukkue: </i> {{ ottelu[0] }}
     <p>
@@ -52,6 +52,9 @@
 {% else %}
     <form action ="/login" method="GET">
         <input type="submit" value="Kirjaudu sisään">
+    </form>
+    <form action ="/newuser" method="GET">
+        <input type="submit" value="Luo tunnus">
     </form>
 
 {% endif %}

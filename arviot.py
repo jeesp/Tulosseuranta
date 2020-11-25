@@ -13,7 +13,7 @@ def OttelunArviot(id):
         flash(arvio)
         if arvio[0] == 1:
             ylapeukut += 1
-        if arvio[0] == 0:
+        if arvio[0] == -1:
             alapeukut += 1
     list = [ylapeukut, alapeukut]
     return list

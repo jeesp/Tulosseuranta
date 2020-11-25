@@ -16,6 +16,7 @@ def tarkistus(username, password):
     else:
         if check_password_hash(user[0],password):
             session["user_id"] = user[1]
+            session["username"] = username
             flash ("Tervetuloa!")
             if is_admin(user[1]):
                 session["admin"] = True

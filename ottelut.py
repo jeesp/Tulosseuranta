@@ -91,8 +91,18 @@ def kolmeuusintaottelua():
     sql = "SELECT J.nimi, T.nimi, O.pisteet_koti, O.pisteet_vieras, O.ajankohta, O.id FROM Joukkueet J, Joukkueet T,Ottelut O WHERE O.joukkue1_id=J.id AND O.joukkue2_id=T.id ORDER BY O.ajankohta DESC LIMIT 3"
     result = db.session.execute(sql)
     return result.fetchall()
+
+def kolmeparastaottelua():
+    sql = "SELECT ottelu_id FROM arviot GROUP BY ottelu_id ORDER BY SUM(arvio) DESC LIMIT 3"
+    result = db.session.execute(sql)
+    otteluidt = result.fetchall()
+    ottelut=[]
+    for ottelu in otteluidt:
+        list = haeOttelu(ottelu[0])
+        ottelut.append(list)
+    return ottelut
 def haeOttelu(id):
-    sql = "SELECT J.nimi, T.nimi, O.pisteet_koti, O.pisteet_vieras, O.ajankohta, O.id FROM Joukkueet J, Joukkueet T,Ottelut O WHERE O.id=:id AND O.joukkue1_id=J.id AND O.joukkue2_id=T.id ORDER BY O.ajankohta DESC"
+    sql = "SELECT J.nimi, T.nimi, O.pisteet_koti, O.pisteet_vieras, O.ajankohta, O.id FROM Joukkueet J, Joukkueet T,Ottelut O WHERE O.id=:id AND O.joukkue1_id=J.id AND O.joukkue2_id=T.id"
     result = db.session.execute(sql, {"id":id})
     return result.fetchone()
 def paivitaOttelusivu(otteluid):

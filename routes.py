@@ -9,7 +9,7 @@ import kirjautuminen, joukkueet, ottelut, highscore, viestit, arviot
 
 @app.route("/")
 def index():
-    list = ottelut.kolmeuusintaottelua()
+    list = ottelut.kolmeparastaottelua()
     return render_template("index.html", ottelut=list)
 
 @app.route("/naytaottelut")
@@ -31,7 +31,7 @@ def signin():
             flash ("Salasana liian lyhyt, pitää olla vähintään 4 merkkiä.")
             return render_template("newuser.html")
         if kirjautuminen.uusikayttaja(username,password):
-            return redirect("/")
+            return render_template("login.html")
         else:
             return render_template("newuser.html")
     
@@ -160,6 +160,7 @@ def logout():
     if kirjautuminen.is_admin(session["user_id"]):
         del session["admin"]
     del session["user_id"]
+    del session["username"]
     return redirect("/")
 
 @app.route("/result")
