@@ -1,4 +1,8 @@
+{% extends "layout.html" %}
+{% block title %}Uusi käyttäjä{% endblock %}
+{% block content %}
 {% if session.user_id %}
+
 <h1>Hall of fame</h1>
 <hr>
 <p>Pelaaja | Voitot | Häviöt | KD-Ratio</p>
@@ -9,7 +13,8 @@
 <a href="/lowscoreplayer">Näytä sittenkin huonoimmat?</a>
 <hr>
 <a href="/logout">Kirjaudu ulos</a>
-<a href="/etusivu" >Etusivu</a>
+<a href="/" >Etusivu</a>
 {% else %}
 <a href="/login">Kirjaudu sisään</a>
 {% endif %}
+{% endblock %}

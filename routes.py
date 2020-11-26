@@ -5,16 +5,17 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from db import db
 from app import app
-import kirjautuminen, joukkueet, ottelut, highscore, viestit
+import os
+import kirjautuminen, joukkueet, ottelut, highscore, viestit, arviot
 
 @app.route("/")
 def index():
-    list = ottelut.kolmeuusintaottelua()
+    list = ottelut.kolmeparastaottelua()
     return render_template("index.html", ottelut=list)
 
 @app.route("/naytaottelut")
 def naytaottelut():
-    list = ottelut.Ottelut()
+    list = ottelut.OttelutSuosituinEnsin()
     return render_template("kaikkiottelut.html", ottelut=list)
 
 @app.route("/signin",methods=["GET","POST"])
@@ -24,53 +25,57 @@ def signin():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        if username == "" or password == "":
+        if len(username) < 1 or len(password) < 1:
             flash("Tyhjä kenttä")
             return render_template("newuser.html")
         if len(password) < 4:
             flash ("Salasana liian lyhyt, pitää olla vähintään 4 merkkiä.")
             return render_template("newuser.html")
+        if len(username) > 30:
+            flash("Käyttäjänimi liian pitkä, alle 30 sallittu")
         if kirjautuminen.uusikayttaja(username,password):
-            return redirect("/")
+            return render_template("login.html")
         else:
             return render_template("newuser.html")
     
 @app.route("/newuser",methods=["GET","POST"])
 def newuser():
+    
     return render_template("newuser.html")
 
-@app.route("/etusivu",methods=["GET","POST"])
-def etusivu():
-    return render_template("index.html")
-
-@app.route("/naytakommentit",methods=["GET","POST"])
-def naytakommentit():
+@app.route("/ottelu/<int:otteluid>",methods=["GET","POST"])
+def ottelu(otteluid):
     if request.method == "GET":
         return redirect("/")
     if request.method == "POST":
-        otteluid = request.form["id"]
-        ottelu = ottelut.haeOttelu(otteluid)
-        list = viestit.OttelunViestit(otteluid)
-        return render_template("ottelusivu.html", ottelu=ottelu, viestit=list)
+        list = ottelut.paivitaOttelusivu(otteluid)
+        return render_template("ottelusivu.html", ottelu=list[0], viestit=list[1], arviot=list[2])
 
-@app.route("/lisaakommentti", methods=["GET","POST"])
-def lisakommentti():
+@app.route("/ottelu/<int:otteluid>/lisaakommentti", methods=["GET","POST"])
+def lisakommentti(otteluid):
     if request.method == "GET":
         return redirect("/")
     if request.method == "POST":
         viesti = request.form["viesti"]
-        otteluid = request.form["id"]
-        if viestit.LahetaViesti(otteluid,viesti):
-            flash("Kommentti lisätty")
-            ottelu = ottelut.haeOttelu(otteluid)
-            list = viestit.OttelunViestit(otteluid)
-            return render_template("ottelusivu.html", ottelu=ottelu, viestit=list)
-        else:
-            flash("Viestin lähetys epäonnistui")
-            ottelu = ottelut.haeOttelu(otteluid)
-            list = viestit.OttelunViestit(otteluid)
-            return render_template("ottelusivu.html", ottelu=ottelu, viestit=list)
+        if len(viesti) < 1:
+            flash("Tyhjä kenttä")
+        if len(viesti) > 500:
+            flash("Liian pitkä viesti")
+        if session["csrf_token"] != request.form["csrf_token"]:
+            abort(403)
+        viestit.LahetaViesti(otteluid,viesti)
+        list = ottelut.paivitaOttelusivu(otteluid)
+        return render_template("ottelusivu.html", ottelu=list[0], viestit=list[1], arviot=list[2])
 
+@app.route("/ottelu/<int:otteluid>/lisaaArvio", methods=["GET","POST"])
+def lisaaArvio(otteluid):
+    if request.method == "GET":
+        return redirect("/")
+    if request.method == "POST":
+        arvio = request.form["arvio"]
+        arviot.LisaaArvio(kirjautuminen.user_id(),otteluid, arvio)
+        list = ottelut.paivitaOttelusivu(otteluid)
+        return render_template("ottelusivu.html", ottelu=list[0], viestit=list[1], arviot=list[2])
 
 @app.route("/newteam",methods=["GET", "POST"])
 def newteam():
@@ -91,13 +96,14 @@ def creatematch():
         joukkue2 = request.form["team2"]
         pisteet1 = request.form["team1points"]
         pisteet2 = request.form["team2points"]
-        if joukkue1 == "" or joukkue2 == "" or pisteet1 == "" or pisteet2 == "":
+        if len(joukkue1) < 1 or len(joukkue2) < 1  or len(pisteet1) < 1  or len(pisteet2) < 1:
             flash("Jokin kenttä oli tyhjä.")
             return render_template("newmatch.html") 
         if int(pisteet1) < 0 or int(pisteet1) > 10 or int(pisteet2) < 0 or int(pisteet2) > 10:
             flash("Nyt vaikuttaa huijaukselta.. Pisteitä liikaa tai liian vähän")
             return render_template("newmatch.html")
-        
+        if session["csrf_token"] != request.form["csrf_token"]:
+            abort(403)
         if ottelut.ottelupelattu(joukkue1,joukkue2,pisteet1,pisteet2):
 
             return redirect("/")
@@ -112,11 +118,16 @@ def createteam():
         username1 = request.form["username1"]
         username2 = request.form["username2"]
         team = request.form["team"]
-        if username1 == "" or username2 == "" or team == "":
+        if len(username1) < 1 or len(username2) < 1 or len(team) < 1:
             flash("Kenttä tyhjä")
             return render_template("newteam.html")
+        if len(team) > 50:
+            flash("Liian pitkä nimi joukkueella")
+            return render_template("newteam.html")
+        if session["csrf_token"] != request.form["csrf_token"]:
+            abort(403)
         if joukkueet.createteam(username1,username2,team):
-            return render_template("index.html")
+            return redirect("/")
         else:
             return render_template("newteam.html")
 
@@ -147,20 +158,19 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        if username == "" or password == "":
+        if len(username) < 1 or len(password) < 1:
             flash("Tyhjä kenttä")
             return render_template("login.html")
         if kirjautuminen.tarkistus(username,password):
-            return render_template("index.html")
+            return redirect("/")
         else:
             return render_template("login.html")
 
 @app.route("/logout")
 def logout():
     flash ("Hate to see you leave")
+    if kirjautuminen.is_admin(session["user_id"]):
+        del session["admin"]
     del session["user_id"]
+    del session["username"]
     return redirect("/")
-
-@app.route("/result")
-def result():
-    query = request.form["query"]

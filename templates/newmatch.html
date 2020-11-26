@@ -1,13 +1,14 @@
+{% extends "layout.html" %}
+{% block title %}Uusi käyttäjä{% endblock %}
+{% block content %}
 {% if session.user_id %}
 <p>Olet kirjautunut nimellä {{ session.user_id }}</p>
-<a href="/logout">Kirjaudu ulos</a>
-<a href="/etusivu" >Etusivu</a>
 
 {% for message in get_flashed_messages() %}
         <p>{{ message }}</p>
     {% endfor %}
 
-<form action="/creatematch" method="POST">
+<form action="/creatematch" method="POST" onsubmit="return check(this)">
 Joukkueesi nimi:
 <input type="text" name="team1"></p>
 Vastustajan joukkue:
@@ -18,8 +19,34 @@ Upottamanne mukit:
 <input type="number" name="team1points"></p>
 Toisen joukkueen upottamat mukit:
 <input type="number" name="team2points"></p>
+<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 
 <input type="submit" value="Syötä tulos">
 </form>
 
 {% endif %}
+<script>
+    function check(form) {
+
+        if (form.team1.value.length < 1) {
+            alert("Tyhjä kenttä");
+            return false;
+        }
+        if (form.team2.value.length < 1) {
+            alert("Tyhjä kenttä");
+            return false;
+        }
+        if (form.team1points.value.length < 1) {
+            alert("Tyhjä kenttä");
+            return false;
+        }
+        if (form.team2points.value.length < 1) {
+            alert("Tyhjä kenttä");
+            return false;
+        }
+
+
+        return true;
+    }
+</script>
+{% endblock %}

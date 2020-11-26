@@ -5,6 +5,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from db import db
 from app import app
+import os
 
 def tarkistus(username, password):
     sql = "SELECT password, id FROM users WHERE username=:username"
@@ -16,8 +17,11 @@ def tarkistus(username, password):
     else:
         if check_password_hash(user[0],password):
             session["user_id"] = user[1]
+            session["username"] = username
+            session["csrf_token"] = os.urandom(16).hex()
             flash ("Tervetuloa!")
-
+            if is_admin(user[1]):
+                session["admin"] = True
             return True
         else:
             flash("Väärä salis bro")
@@ -25,6 +29,15 @@ def tarkistus(username, password):
 
 def user_id():
     return session.get("user_id",0)
+
+def is_admin(id):
+    sql = "SELECT admin FROM users WHERE id=:id"
+    result = db.session.execute(sql, {"id":id})
+    admin = result.fetchone()[0]
+    if admin == 1:
+        return True
+    else:
+        return False
 
 def uusikayttaja(username,password):
     hash_value = generate_password_hash(password)

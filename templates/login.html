@@ -1,8 +1,12 @@
+{% extends "layout.html" %}
+{% block title %}Uusi käyttäjä{% endblock %}
+{% block content %}
 {% for message in get_flashed_messages() %}
         <p>{{ message }}</p>
     {% endfor %}
 {% if session.user_id %}
-<p>Olet kirjautunut nimellä {{ session.user_id }}</p>
+<p>Olet kirjautunut nimellä {{ session.username}}</p>
+<a href="/">Etusivu</a>
 <a href="/logout">Kirjaudu ulos</a>
 {% else %}
 <form action="/login" method="POST">
@@ -20,4 +24,5 @@
 <input type="submit" value="Luo tunnus">
 </form>
 {% endif %}
+{% endblock %}
 

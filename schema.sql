@@ -2,7 +2,7 @@ CREATE TABLE users (
 	id SERIAL PRIMARY KEY,
     	username TEXT UNIQUE,
     	password TEXT,
-	admin INT
+		admin INT DEFAULT 0
 );
 CREATE TABLE Joukkueet (
 	id SERIAL PRIMARY KEY,
