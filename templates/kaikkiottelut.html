@@ -2,10 +2,9 @@
 {% block title %}Uusi käyttäjä{% endblock %}
 {% block content %}
 {% if session.user_id %}
-Olet kirjautunut sisään.
-<a href="/">Etusivu</a> | <a href="/logout">Kirjaudu ulos</a>
-<hr>
-<p>Ottelut</p>
+
+<h2>Ottelut</h2>
+
     {% for ottelu in ottelut %}
     <i>Kotijoukkue: </i> {{ ottelu[0] }}
     <p>

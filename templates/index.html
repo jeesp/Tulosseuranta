@@ -6,10 +6,6 @@
     {% endfor %}
 {% if session.user_id %}
 
-
-    <p>Olet kirjautunut nimellä {{ session.username }}{% if session.admin == True %} (Admin) {% endif %}</p>
-    <a href="/logout">Kirjaudu ulos</a>
-
     <form action ="/newteam" method="POST">
         <input type="submit" value="Luo joukkue">
     </form>
@@ -54,16 +50,11 @@
     <hr>
     {% endfor %}
     
-    {% if session.user_id %}
-    Olet kirjautunut sisään.
-    <a href="/logout">Kirjaudu ulos</a>
-    {% else %}
-    <a href="/login">Kirjaudu sisään</a>
-    {% endif %}
 {% else %}
     <form action ="/login" method="GET">
         <input type="submit" value="Kirjaudu sisään">
     </form>
+    <br>
     <form action ="/newuser" method="GET">
         <input type="submit" value="Luo tunnus">
     </form>

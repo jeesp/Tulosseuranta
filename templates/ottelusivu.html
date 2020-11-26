@@ -2,9 +2,7 @@
 {% block title %}Uusi käyttäjä{% endblock %}
 {% block content %}
 {% if session.user_id %}
-Olet kirjautunut sisään.
-<a href="/">Etusivu</a> | <a href="/logout">Kirjaudu ulos</a>
-<hr>
+
 <h1>Ottelu {{ ottelu[0] }} vs  {{ ottelu[1] }}</h1>
 <p>Yläpeukut: {{ arviot[0] }} </p>
 <p>Alapeukut: {{ arviot[1] }} </p>
@@ -17,7 +15,6 @@ Olet kirjautunut sisään.
     <i>Vierasjoukkueen pisteet: </i> {{ ottelu[3] }}
     <p>
     <i>Pelattu:</i> {{ ottelu[4].strftime("%Y") }}
-    <hr>
     {% for message in get_flashed_messages() %}
         <p><b>{{ message }}</b></p>
     {% endfor %}
@@ -45,7 +42,6 @@ Olet kirjautunut sisään.
     <i><b>Lähettäjä:</b></i> {{ viesti[1] }}
     <p>
     <i><b>Aika:</b></i> {{ viesti[2].strftime("%Y-%m-%d %H:%M:%S") }}
-    <hr>
     {% endfor %}
     
     

@@ -2,8 +2,6 @@
 {% block title %}Uusi käyttäjä{% endblock %}
 {% block content %}
 {% if session.user_id %}
-<a href="/logout">Kirjaudu ulos</a>
-<a href="/" >Etusivu</a>
 
 {% for message in get_flashed_messages() %}
         <p>{{ message }}</p>
