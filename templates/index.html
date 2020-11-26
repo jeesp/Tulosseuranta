@@ -3,11 +3,9 @@
         <p>{{ message }}</p>
     {% endfor %}
 {% if session.user_id %}
-{% if session.admin == True %}
-<p>testitesti</p>
-{% endif %}
 
-    <p>Olet kirjautunut nimellä {{ session.username }}</p>
+
+    <p>Olet kirjautunut nimellä {{ session.username }}{% if session.admin == True %} (Admin) {% endif %}</p>
     <a href="/logout">Kirjaudu ulos</a>
 
     <form action ="/newteam" method="POST">
@@ -22,6 +20,17 @@
     <form action ="/highscoreplayer" method="POST">
         <input type="submit" value="Näytä parhaat pelaajat">
     </form>
+    <form action ="/naytaottelut" method="GET">
+        <input type="submit" value="Näytä kaikki ottelut">
+    </form>
+    {% if session.admin == True %}
+<form action ="/changematch" method="POST">
+    <input type="submit" value="Muokkaa otteluita ( EI TOIMI VIELÄ)">
+</form>
+<form action ="/changeteam" method="POST">
+    <input type="submit" value="Muokkaa joukkueita ( EI TOIMI VIELÄ)">
+</form>
+{% endif %}
     <hr>
     <h3>Kolme parasta ottelua</h3>
     {% for ottelu in ottelut %}
@@ -34,15 +43,15 @@
     <i>Vierasjoukkueen pisteet: </i> {{ ottelu[3] }}
     <p>
     <i>Pelattu:</i> {{ ottelu[4].strftime("%Y-%m-%d %H:%M:%S") }}
+    <p>
+    <i>{{ ottelu [6] }} | Yläpeukut - Alapeukut | {{ ottelu [7] }} </i>
     <form action ="/ottelu/{{ ottelu[5] }}" method="POST">
         <input type="hidden" name="otteluid" value="{{ ottelu[5] }}">
-        <input type="submit" value="Näytä {{ ottelu[5] }}. ottelun kommentit">
+        <input type="submit" value="Näytä ottelun kommentit">
     </form>
     <hr>
     {% endfor %}
-    <form action ="/naytaottelut" method="GET">
-        <input type="submit" value="Näytä kaikki ottelut">
-    </form>
+    
     {% if session.user_id %}
     Olet kirjautunut sisään.
     <a href="/logout">Kirjaudu ulos</a>

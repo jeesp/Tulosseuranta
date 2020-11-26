@@ -13,10 +13,11 @@ Olet kirjautunut sisään.
     <i>Vierasjoukkueem pisteet: </i> {{ ottelu[3] }}
     <p>
     <i>Pelattu:</i> {{ ottelu[4].strftime("%Y-%m-%d %H:%M:%S") }}
-    <form action ="/naytakommentit" method="POST">
-        <input type="hidden" name="id" value="{{ ottelu[5] }}">
+    <form action ="/ottelu/{{ ottelu[5] }}" method="POST">
+        <input type="hidden" name="otteluid" value="{{ ottelu[5] }}">
         <input type="submit" value="Näytä {{ ottelu[5] }}. ottelun kommentit">
     </form>
+
 
     <hr>
     {% endfor %}
