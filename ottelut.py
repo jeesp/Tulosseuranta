@@ -83,17 +83,26 @@ def ottelupelattu(joukkue1,joukkue2,pisteet1,pisteet2):
     flash("Hmmm...?")
     flash("Tasapeli...? Ratkaistaan sudden deathilla")
     return True
-def Ottelut():
-    sql = "SELECT J.nimi, T.nimi, O.pisteet_koti, O.pisteet_vieras, O.ajankohta, O.id FROM Joukkueet J, Joukkueet T,Ottelut O WHERE O.joukkue1_id=J.id AND O.joukkue2_id=T.id ORDER BY O.ajankohta DESC"
+def OttelutViimeisinEnsin():
+    sql = "SELECT ottelu_id FROM ottelut ORDER BY O.ajankohta DESC"
     result = db.session.execute(sql)
-    return result.fetchall()
-def kolmeuusintaottelua():
-    sql = "SELECT J.nimi, T.nimi, O.pisteet_koti, O.pisteet_vieras, O.ajankohta, O.id FROM Joukkueet J, Joukkueet T,Ottelut O WHERE O.joukkue1_id=J.id AND O.joukkue2_id=T.id ORDER BY O.ajankohta DESC LIMIT 3"
+    otteluidt = result.fetchall()
+    ottelut=[]
+    for ottelu in otteluidt:
+        ottelut.append(haeOttelu(ottelu[0]))
+    return ottelut
+
+def OttelutSuosituinEnsin():
+    sql = "SELECT ottelu_id FROM arviot GROUP BY ottelu_id ORDER BY SUM(arvio) DESC, (SELECT COUNT(*) FROM arviot WHERE arvio=1) DESC, (SELECT COUNT(*) FROM arviot WHERE arvio=-1) ASC"
     result = db.session.execute(sql)
-    return result.fetchall()
+    otteluidt = result.fetchall()
+    ottelut=[]
+    for ottelu in otteluidt:
+        ottelut.append(haeOttelu(ottelu[0]))
+    return ottelut
 
 def kolmeparastaottelua():
-    sql = "SELECT ottelu_id FROM arviot GROUP BY ottelu_id ORDER BY SUM(arvio) DESC LIMIT 3"
+    sql = "SELECT ottelu_id FROM arviot GROUP BY ottelu_id ORDER BY SUM(arvio) DESC, (SELECT COUNT(*) FROM arviot WHERE arvio=1) DESC, (SELECT COUNT(*) FROM arviot WHERE arvio=-1) ASC LIMIT 3"
     result = db.session.execute(sql)
     otteluidt = result.fetchall()
     ottelut=[]

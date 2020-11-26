@@ -8,9 +8,7 @@ def OttelunArviot(id):
     arviot = result.fetchall()
     ylapeukut = 0
     alapeukut = 0
-    flash(arviot)
     for arvio in arviot:
-        flash(arvio)
         if arvio[0] == 1:
             ylapeukut += 1
         if arvio[0] == -1:

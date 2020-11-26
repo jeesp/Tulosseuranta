@@ -1,18 +1,24 @@
+{% extends "layout.html" %}
+{% block title %}Uusi käyttäjä{% endblock %}
+{% block content %}
 {% if session.username %}
 <p>Olet kirjautunut nimellä {{ session.username }}</p>
+
+<a href="/">Etusivu</a>
 <a href="/logout">Kirjaudu ulos</a>
 {% else %}
-
+<h/2>Uusi käyttäjä</h>
 {% for message in get_flashed_messages() %}
         <p>{{ message }}</p>
     {% endfor %}
 
-<form action="/signin" method="POST">
+<form action="/signin" method="POST" onsubmit="return check(this)">
 <p>Uusi tunnus:<br>
 <input type="text" name="username"></p>
 <p>Uusi salasana:<br>
 <input type="password" name="password"></p>
 <input type="submit" value="Luo tunnus">
+<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 
 </form>
 <form action ="/login" method="GET">
@@ -22,3 +28,22 @@
 <a href="/">Palaa etusivulle</a>
 {% endif %}
 
+<script>
+    function check(form) {
+        if (form.username.value.length > 100) {
+            alert("Käyttäjänimi on liian pitkä");
+            return false;
+        }
+        if (form.username.value.length < 1) {
+            alert("Käyttäjänimi on liian lyhyt");
+            return false;
+        }
+        if (form.password.value.length < 4) {
+            alert("Salasana on liian lyhyt");
+            return false;
+        }
+        return true;
+    }
+    </script>
+
+{% endblock %}

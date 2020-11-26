@@ -1,3 +1,6 @@
+{% extends "layout.html" %}
+{% block title %}Uusi käyttäjä{% endblock %}
+{% block content %}
 {% if session.user_id %}
 Olet kirjautunut sisään.
 <a href="/">Etusivu</a> | <a href="/logout">Kirjaudu ulos</a>
@@ -30,7 +33,7 @@ Olet kirjautunut sisään.
         <input type="submit" value="Huono peli bro">
     </form>
 
-    <form action ="/ottelu/{{ ottelu[5] }}/lisaakommentti" method="POST">
+    <form action ="/ottelu/{{ ottelu[5] }}/lisaakommentti" method="POST" onsubmit="return check(this)">
         <input type="text" name="viesti"></p>
         <input type="hidden" name="otteluid" value="{{ ottelu[5] }}">
         <input type="submit" value="Kommentoi ottelua">
@@ -53,3 +56,19 @@ Olet kirjautunut sisään.
     </form>
 
 {% endif %}
+<script>
+    function check(form) {
+
+        if (form.viesti.value.length < 1) {
+            alert("Tyhjä kenttä");
+            return false;
+        }
+        if (form.viesti.value.length > 500) {
+            alert("Liian pitkä kommentti");
+            return false;
+
+        }
+        return true;
+    }
+</script>
+{% endblock %}

@@ -1,4 +1,6 @@
-<p>Etusivu</p>
+{% extends "layout.html" %}
+{% block title %}Uusi käyttäjä{% endblock %}
+{% block content %}
 {% for message in get_flashed_messages() %}
         <p>{{ message }}</p>
     {% endfor %}
@@ -32,7 +34,7 @@
 </form>
 {% endif %}
     <hr>
-    <h3>Kolme parasta ottelua</h3>
+    <h3>Parhaat ottelut</h3>
     {% for ottelu in ottelut %}
     <i>Kotijoukkue: </i> {{ ottelu[0] }}
     <p>
@@ -68,4 +70,4 @@
 
 {% endif %}
 
-
+{% endblock %}

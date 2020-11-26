@@ -1,3 +1,6 @@
+{% extends "layout.html" %}
+{% block title %}Uusi käyttäjä{% endblock %}
+{% block content %}
 {% if session.user_id %}
 Olet kirjautunut sisään.
 <a href="/">Etusivu</a> | <a href="/logout">Kirjaudu ulos</a>
@@ -13,6 +16,8 @@ Olet kirjautunut sisään.
     <i>Vierasjoukkueem pisteet: </i> {{ ottelu[3] }}
     <p>
     <i>Pelattu:</i> {{ ottelu[4].strftime("%Y-%m-%d %H:%M:%S") }}
+    <p>
+    <i>{{ ottelu [6] }} | Yläpeukut - Alapeukut | {{ ottelu [7] }} </i>
     <form action ="/ottelu/{{ ottelu[5] }}" method="POST">
         <input type="hidden" name="otteluid" value="{{ ottelu[5] }}">
         <input type="submit" value="Näytä {{ ottelu[5] }}. ottelun kommentit">
@@ -28,3 +33,4 @@ Olet kirjautunut sisään.
     </form>
 
 {% endif %}
+{% endblock %}

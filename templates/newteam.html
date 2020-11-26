@@ -1,18 +1,37 @@
+{% extends "layout.html" %}
+{% block title %}Uusi käyttäjä{% endblock %}
+{% block content %}
 {% if session.user_id %}
 <a href="/logout">Kirjaudu ulos</a>
-<a href="/etusivu" >Etusivu</a>
+<a href="/" >Etusivu</a>
 
 {% for message in get_flashed_messages() %}
         <p>{{ message }}</p>
     {% endfor %}
 
-<form action="/createteam" method="POST">
+<form action="/createteam" method="POST" onsubmit="return check(this)">
 Joukkueen nimi:
 <input type="text" name="team"></p>
 Joukkueen pelaajien käyttäjänimet:
 <input type="text" name="username1"></p>
 <input type="text" name="username2"></p> <br>
-
+<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 <input type="submit" value="Luo joukkue">
 </form>
 {% endif %}
+<script>
+    function check(form) {
+
+        if (form.team.value.length < 1) {
+            alert("Tyhjä kenttä");
+            return false;
+        }
+        if (form.team.value.length > 50) {
+            alert("Liian pitkä nimi joukkueella");
+            return false;
+
+        }
+        return true;
+    }
+</script>
+{% endblock %}

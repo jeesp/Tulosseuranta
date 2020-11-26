@@ -14,7 +14,7 @@ def OttelunViestit(id):
 
 def LahetaViesti(otteluid, viesti):
     userid = kirjautuminen.user_id()
-    if userid == 0:
+    if userid == 0 or len(viesti) < 1 or len(viesti) > 500:
         flash("Viestin lähetys epäonnistui")
         return
     sql = "INSERT INTO Kommentit (kayttaja_id, ottelu_id, viesti,aika) VALUES (:userid,:otteluid, :viesti, NOW())"
