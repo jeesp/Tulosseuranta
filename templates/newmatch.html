@@ -2,7 +2,7 @@
 {% block title %}Uusi käyttäjä{% endblock %}
 {% block content %}
 {% if session.user_id %}
-<p>Olet kirjautunut nimellä {{ session.user_id }}</p>
+<p>Olet kirjautunut nimellä {{ session.username }}</p>
 
 {% for message in get_flashed_messages() %}
         <p>{{ message }}</p>

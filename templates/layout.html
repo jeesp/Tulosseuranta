@@ -1,24 +1,42 @@
 
 <!DOCTYPE html>
-<link rel="stylesheet" href="./static/main.css">
+<link rel="stylesheet" href="/static/main.css?22221221222222222222222222222222222222212222223222222222222222222221323442222222222222222222">
 
 <meta name='viewport' content='width=device-width, initial-scale=1'>
-<body>
-    <div class "header">
+    <header>
         <title>Tulosseuranta - {% block title %}{% endblock %}</title>
         <h1>Tulosseuranta</h1>
 
         {% if session.user_id %}
         <p>Olet kirjautunut nimellä {{ session.username }}{% if session.admin == True %} (Admin) {% endif %}</p>
         {% endif %}
+        <nav>
+            <ul>
+                <li><a href="/">Etusivu</a></li>
+                <li><a href="/newteam">Luo joukkue</a></li>
+                <li><a href="/newmatch">Merkitse ottelu</a></li>
+                <li><a href="/highscoreteam">Parhaat joukkueet</a></li>
 
-        <a href="/">Etusivu</a>
-
-        {% if session.user_id %}
-        <a href="/logout">Kirjaudu ulos</a>
+                <li><a href="/highscoreplayer">Parhaat pelaajat</a></li>
+                <li><a href="/naytaottelut">Kaikki ottelut</a></li>
+                {% if session.user_id %}
+                <li><a href="/logout">Kirjaudu ulos</a></li>
+                {% else %}
+                <li><a href="/login">Kirjaudu sisään</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% if session.admin == True %}
+        <nav>
+            <ul>
+                <li><a href="/changematch">Muokkaa otteluita ( EI TOIMI VIELÄ)</a></li>
+                <li><a href="/changeteam">Muokkaa joukkueita ( EI TOIMI VIELÄ)</a></li>
+            </ul>
+        </nav>
         {% endif %}
+    </header>
+    <body>
+    <div class="content">
+        {% block content %}{% endblock %}
     </div>
-    <hr>
-    {% block content %}{% endblock %}
-    <hr>
 </body>

@@ -1,64 +1,90 @@
 {% extends "layout.html" %}
-{% block title %}Uusi käyttäjä{% endblock %}
 {% block content %}
 {% for message in get_flashed_messages() %}
         <p>{{ message }}</p>
     {% endfor %}
-{% if session.user_id %}
-
-    <form action ="/newteam" method="POST">
-        <input type="submit" value="Luo joukkue">
-    </form>
-    <form action ="/newmatch" method="POST">
-        <input type="submit" value="Merkitse ottelu">
-    </form>
-    <form action ="/highscoreteam" method="POST">
-        <input type="submit" value="Näytä parhaat joukkueet">
-    </form>
-    <form action ="/highscoreplayer" method="POST">
-        <input type="submit" value="Näytä parhaat pelaajat">
-    </form>
-    <form action ="/naytaottelut" method="GET">
-        <input type="submit" value="Näytä kaikki ottelut">
-    </form>
-    {% if session.admin == True %}
-<form action ="/changematch" method="POST">
-    <input type="submit" value="Muokkaa otteluita ( EI TOIMI VIELÄ)">
-</form>
-<form action ="/changeteam" method="POST">
-    <input type="submit" value="Muokkaa joukkueita ( EI TOIMI VIELÄ)">
-</form>
-{% endif %}
-    <hr>
     <h3>Parhaat ottelut</h3>
     {% for ottelu in ottelut %}
-    <i>Kotijoukkue: </i> {{ ottelu[0] }}
-    <p>
-    <i>Vierasjoukkue: </i> {{ ottelu[1] }}
-    <p>
-    <i>Kotijoukkueen pisteet: </i> {{ ottelu[2] }}
-    <p>
-    <i>Vierasjoukkueen pisteet: </i> {{ ottelu[3] }}
-    <p>
-    <i>Pelattu:</i> {{ ottelu[4].strftime("%Y-%m-%d %H:%M:%S") }}
-    <p>
-    <i>{{ ottelu [6] }} | Yläpeukut - Alapeukut | {{ ottelu [7] }} </i>
-    <form action ="/ottelu/{{ ottelu[5] }}" method="POST">
-        <input type="hidden" name="otteluid" value="{{ ottelu[5] }}">
-        <input type="submit" value="Näytä ottelun kommentit">
-    </form>
-    <hr>
-    {% endfor %}
-    
-{% else %}
-    <form action ="/login" method="GET">
-        <input type="submit" value="Kirjaudu sisään">
-    </form>
-    <br>
-    <form action ="/newuser" method="GET">
-        <input type="submit" value="Luo tunnus">
-    </form>
 
-{% endif %}
+        
+    <div class="ottelut">
+        <h4>{{ ottelu[0] }} </h4><h4>-</h4><h4> {{ ottelu[1] }}</h4>
+        <div class="joukkueet1">
+        {{ ottelu[2] }}
+        </div>
+        <div class="ottelu">
+            <ul class="ottelutiedot">
+            <li>
+            <i>Pelattu:</i> {{ ottelu[4].strftime("%Y-%m-%d %H:%M:%S") }}
+            <li>
+            <i>{{ ottelu [6] }} | Yläpeukut - Alapeukut | {{ ottelu [7] }} </i>
+            </li>
+            </ul>
+            <div class="ottelunappi">
+                <form action ="/ottelu/{{ ottelu[5] }}" method="POST">
+                    <input type="hidden" name="otteluid" value="{{ ottelu[5] }}">
+                    <input type="submit" value="Näytä ottelun kommentit">
+                </form>
+            </div>
+        </div>
+        <div class="joukkueet2">   
+        {{ ottelu[3] }}
+        </div>
+        
+        
+    </div>
+    <div class="test"></div>
+    {% endfor %}
+    <p>
+        
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+        asldjlsajlkjaecorepofflösjlkj
+
+    </p>
 
 {% endblock %}
