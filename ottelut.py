@@ -116,6 +116,5 @@ def haeOttelu(id):
 def paivitaOttelusivu(otteluid):
     ottelu = haeOttelu(otteluid)
     viestilista = viestit.OttelunViestit(otteluid)
-    arviolista = arviot.OttelunArviot(otteluid)
-    return ottelu, viestilista, arviolista
+    return ottelu, viestilista
 

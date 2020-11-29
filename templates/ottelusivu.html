@@ -4,8 +4,7 @@
 {% if session.user_id %}
 
 <h1>Ottelu {{ ottelu[0] }} vs  {{ ottelu[1] }}</h1>
-<p>Yläpeukut: {{ arviot[0] }} </p>
-<p>Alapeukut: {{ arviot[1] }} </p>
+<i>{{ ottelu [6] }} | Yläpeukut - Alapeukut | {{ ottelu [7] }} </i>
 <i>Kotijoukkue: </i> {{ ottelu[0] }}
     <p>
     <i>Vierasjoukkue: </i> {{ ottelu[1] }}
@@ -31,8 +30,9 @@
     </form>
 
     <form action ="/ottelu/{{ ottelu[5] }}/lisaakommentti" method="POST" onsubmit="return check(this)">
-        <input type="text" name="viesti"></p>
+        <input type="text" name="viesti">
         <input type="hidden" name="otteluid" value="{{ ottelu[5] }}">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         <input type="submit" value="Kommentoi ottelua">
     </form>
     <h3>Viestit</h3>

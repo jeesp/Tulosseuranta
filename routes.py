@@ -49,7 +49,7 @@ def ottelu(otteluid):
         return redirect("/")
     if request.method == "POST":
         list = ottelut.paivitaOttelusivu(otteluid)
-        return render_template("ottelusivu.html", ottelu=list[0], viestit=list[1], arviot=list[2])
+        return render_template("ottelusivu.html", ottelu=list[0], viestit=list[1])
 
 @app.route("/ottelu/<int:otteluid>/lisaakommentti", methods=["GET","POST"])
 def lisakommentti(otteluid):
@@ -65,7 +65,7 @@ def lisakommentti(otteluid):
             abort(403)
         viestit.LahetaViesti(otteluid,viesti)
         list = ottelut.paivitaOttelusivu(otteluid)
-        return render_template("ottelusivu.html", ottelu=list[0], viestit=list[1], arviot=list[2])
+        return render_template("ottelusivu.html", ottelu=list[0], viestit=list[1])
 
 @app.route("/ottelu/<int:otteluid>/lisaaArvio", methods=["GET","POST"])
 def lisaaArvio(otteluid):
@@ -75,7 +75,7 @@ def lisaaArvio(otteluid):
         arvio = request.form["arvio"]
         arviot.LisaaArvio(kirjautuminen.user_id(),otteluid, arvio)
         list = ottelut.paivitaOttelusivu(otteluid)
-        return render_template("ottelusivu.html", ottelu=list[0], viestit=list[1], arviot=list[2])
+        return render_template("ottelusivu.html", ottelu=list[0], viestit=list[1])
 
 @app.route("/newteam",methods=["GET", "POST"])
 def newteam():
