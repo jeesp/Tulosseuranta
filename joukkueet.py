@@ -54,6 +54,8 @@ def createteam(username1,username2,team):
             sql = "INSERT INTO joukkueidenpelaajat (joukkue_id,jasen_id) VALUES (:nimi,:jasen_id)"
             db.session.execute(sql, {"nimi":teamid,"jasen_id":userid2})
             db.session.commit()
-
+            del session["username1"]
+            del session["username2"]
+            del session["team"]
             flash("Joukkue luotu")
             return True

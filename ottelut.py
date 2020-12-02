@@ -39,6 +39,10 @@ def ottelupelattu(joukkue1,joukkue2,pisteet1,pisteet2):
     sql = "INSERT INTO ottelut (joukkue1_id,joukkue2_id,pisteet_koti,pisteet_vieras, ajankohta) VALUES (:joukkue1,:joukkue2,:pisteet1,:pisteet2, NOW())"
     db.session.execute(sql, {"joukkue1":team1,"joukkue2":team2,"pisteet1":pisteet1,"pisteet2":pisteet2})
     db.session.commit()
+    del session["team1"]
+    del session["team2"]
+    del session["team1points"]
+    del session["team2points"]
     if pisteet1 > pisteet2:
         sql = "SELECT voitot FROM joukkueet WHERE id=:team1"
         result = db.session.execute(sql, {"team1":team1})
@@ -80,9 +84,6 @@ def ottelupelattu(joukkue1,joukkue2,pisteet1,pisteet2):
         db.session.commit()
         flash ("Hyvä matzi")
         return True
-    flash("Hmmm...?")
-    flash("Tasapeli...? Ratkaistaan sudden deathilla")
-    return True
 def OttelutViimeisinEnsin():
     sql = "SELECT ottelu_id FROM ottelut ORDER BY O.ajankohta DESC"
     result = db.session.execute(sql)
@@ -96,6 +97,10 @@ def OttelutSuosituinEnsin():
     sql = "SELECT ottelu_id FROM arviot GROUP BY ottelu_id ORDER BY SUM(arvio) DESC, (SELECT COUNT(*) FROM arviot WHERE arvio=1) DESC, (SELECT COUNT(*) FROM arviot WHERE arvio=-1) ASC"
     result = db.session.execute(sql)
     otteluidt = result.fetchall()
+    sql = "SELECT id FROM Ottelut WHERE id NOT IN (SELECT ottelu_id FROM arviot) ORDER BY ajankohta"
+    result = db.session.execute(sql)
+    arvioimattomat = result.fetchall()
+    otteluidt.extend(arvioimattomat)
     ottelut=[]
     for ottelu in otteluidt:
         ottelut.append(haeOttelu(ottelu[0]))

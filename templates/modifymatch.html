@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block title %}Ottelun muokkaus{% endblock %}
+{% block content %}
+{% if session.user_id %}
+
+{% for message in get_flashed_messages() %}
+        <p>{{ message }}</p>
+    {% endfor %}
+<h2> Tuloksen muokkaus</h2>
+<form action="/modifymatchresult" method="POST" required>
+Ottelun ID:
+<input type="text" name="otteluid" autofocus required></p>
+Oikea lopputulos, kotijoukkueen pisteet:
+<input type="number" name="kotipoints" required></p>
+Vierasjoukkueen pisteet:
+<input type="number" name="vieraspoints" required></p>
+<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+
+<input type="submit" value="Syötä uusi tulos">
+</form>
+
+<form action="/deletematch" method="POST" required>
+    Ottelun ID:
+    <input type="text" name="otteluid" required></p>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    
+    <input type="submit" value="Poista ottelu">
+    </form>
+
+{% endif %}
+<script>
+    function check(form) {
+
+        if (form.otteluid.value.length < 1) {
+            alert("Tyhjä kenttä");
+            return false;
+        }
+        if (form.kotipoints.value.length < 1) {
+            alert("Tyhjä kenttä");
+            return false;
+        }
+        if (form.vieraspoints.value.length < 1) {
+            alert("Tyhjä kenttä");
+            return false;
+        }
+
+
+        return true;
+    }
+    
+</script>
+
+{% endblock %}
