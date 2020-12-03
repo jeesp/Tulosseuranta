@@ -8,8 +8,6 @@ from app import app
 import os
 import kirjautuminen, joukkueet, ottelut, highscore, viestit, arviot
 
-
-
 @app.route("/")
 def index():
     list = ottelut.kolmeparastaottelua()
