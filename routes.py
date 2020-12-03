@@ -5,7 +5,6 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from db import db
 from app import app
-from flask_socketio import SocketIO, emit
 import os
 import kirjautuminen, joukkueet, ottelut, highscore, viestit, arviot
 
@@ -259,8 +258,3 @@ def logout():
     del session["user_id"]
     del session["username"]
     return redirect("/")
-
-socketio = SocketIO(app)
-@socketio.on('disconnect')
-def disconnect_user():
-    logout()
