@@ -5,8 +5,11 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from db import db
 from app import app
+from flask_socketio import SocketIO, emit
 import os
 import kirjautuminen, joukkueet, ottelut, highscore, viestit, arviot
+
+
 
 @app.route("/")
 def index():
@@ -85,21 +88,75 @@ def newteam():
 
 @app.route("/modifyteam",methods=["GET", "POST"])
 def modifyteam():
-        if kirjautuminen.user_id == 0:
-            redirect("/")
-        if kirjautuminen.is_admin(kirjautuminen.user_id()):
-            return render_template("modifyteam.html")
-        flash("Ei admin-oikeutta")
+    if kirjautuminen.user_id == 0:
         return redirect("/")
+    if kirjautuminen.is_admin(kirjautuminen.user_id()):
+        return render_template("modifyteam.html")
+    flash("Ei admin-oikeutta")
+    return redirect("/")
+
+@app.route("/modifyteamusers",methods=["GET", "POST"])
+def modifyteamusers():
+    if request.method == "GET":
+        return redirect("/")
+    if kirjautuminen.user_id == 0:
+        return redirect("/")
+    if kirjautuminen.is_admin(kirjautuminen.user_id()):
+        team = request.form["team"]
+        username1 = request.form["username1"]
+        username2 = request.form["username2"]
+        joukkueet.modify_players(username1,username2,team)
+        return render_template("modifyteam.html")
+    flash("Ei admin-oikeutta")
+    return redirect("/")
+
+@app.route("/deleteteam",methods=["GET", "POST"])
+def deleteteam():
+    if kirjautuminen.user_id == 0:
+        return redirect("/")
+    if kirjautuminen.is_admin(kirjautuminen.user_id()):
+        team = request.form["team"]
+        joukkueet.delete_team(team)
+        return render_template("modifyteam.html")
+    flash("Ei admin-oikeutta")
+    return redirect("/")
 
 @app.route("/modifymatch",methods=["GET", "POST"])
 def modifymatch():
-        if kirjautuminen.user_id == 0:
-            redirect("/")
-        if kirjautuminen.is_admin(kirjautuminen.user_id()):
-            return render_template("modifymatch.html")
-        flash("Ei admin-oikeutta")
+    if kirjautuminen.user_id == 0:
         return redirect("/")
+    if kirjautuminen.is_admin(kirjautuminen.user_id()):
+        return render_template("modifymatch.html")
+    flash("Ei admin-oikeutta")
+    return redirect("/")
+
+@app.route("/deletematch",methods=["GET", "POST"])
+def deletematch():
+    if request.method == "GET":
+        return redirect("/")
+    if kirjautuminen.user_id == 0:
+        return redirect("/")
+    if kirjautuminen.is_admin(kirjautuminen.user_id()):
+        otteluid = request.form["otteluid"]
+        ottelut.delete_match(otteluid)
+        return render_template("modifymatch.html")
+    flash("Ei admin-oikeutta")
+    return redirect("/")
+
+@app.route("/modifymatchresult",methods=["GET", "POST"])
+def modifymatchresult():
+    if request.method == "GET":
+        return redirect("/")
+    if kirjautuminen.user_id == 0:
+        return redirect("/")
+    if kirjautuminen.is_admin(kirjautuminen.user_id()):
+        otteluid = request.form["otteluid"]
+        kotipoints = request.form["kotipoints"]
+        vieraspoints = request.form["vieraspoints"]
+        ottelut.ottelumuutos(otteluid, kotipoints, vieraspoints)
+        return render_template("modifymatch.html")
+    flash("Ei admin-oikeutta")
+    return redirect("/")
 
 @app.route("/newmatch",methods=["GET","POST"])
 def newmatch():
@@ -108,7 +165,7 @@ def newmatch():
 @app.route("/creatematch",methods=["GET","POST"])
 def creatematch():
     if request.method == "GET":
-        return render_template("index.html")
+        return redirect("/")
     if request.method == "POST":
         joukkue1 = request.form["team1"]
         session["team1"] = joukkue1
@@ -202,3 +259,8 @@ def logout():
     del session["user_id"]
     del session["username"]
     return redirect("/")
+
+socketio = SocketIO(app)
+@socketio.on('disconnect')
+def disconnect_user():
+    logout()

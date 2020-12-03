@@ -59,3 +59,49 @@ def createteam(username1,username2,team):
             del session["team"]
             flash("Joukkue luotu")
             return True
+
+def modify_players(username1,username2,team):
+    sql = "SELECT id FROM users WHERE username=:username"
+    result = db.session.execute(sql, {"username":username1})
+    username1sql = result.fetchone()
+    sql = "SELECT id FROM users WHERE username=:username"
+    result = db.session.execute(sql, {"username":username2})
+    username2sql = result.fetchone()
+    sql = "SELECT id FROM joukkueet WHERE nimi=:nimi"
+    result = db.session.execute(sql, {"nimi":team})
+    teamsql = result.fetchone()
+    
+    if teamsql is  None:
+        flash("Tiimiä ei ole")
+    if username1sql == None or username2sql == None:
+        flash("Käyttäjänimeä ei löydy")
+    if username1sql == username2sql:
+        flash("Valitse eri pelaajat")
+    if teamsql is None or username1sql == None or username2sql == None or username1sql == username2sql:
+        return False
+    else:
+        sql = "DELETE FROM joukkueidenpelaajat WHERE joukkue_id =:teamid"
+        db.session.execute(sql, {"teamid":teamsql[0]})
+        db.session.commit()
+        sql = "INSERT INTO joukkueidenpelaajat (joukkue_id,jasen_id) VALUES (:joukkue_id,:jasen_id)"
+        db.session.execute(sql, {"joukkue_id":teamsql[0],"jasen_id":username1sql[0]})
+        db.session.commit()
+        sql = "INSERT INTO joukkueidenpelaajat (joukkue_id,jasen_id) VALUES (:joukkue_id,:jasen_id)"
+        db.session.execute(sql, {"joukkue_id":teamsql[0],"jasen_id":username2sql[0]})
+        db.session.commit()
+        flash("Muutos suoritettu")
+        return True
+
+def delete_team(team):
+    sql = "SELECT id FROM joukkueet WHERE nimi=:nimi"
+    result = db.session.execute(sql, {"nimi":team})
+    teamsql = result.fetchone()
+    if teamsql is  None:
+        flash("Tiimiä ei ole")
+        return False
+    else:
+        sql = "DELETE FROM joukkueet WHERE id =:id"
+        db.session.execute(sql, {"id":teamsql[0]})
+        db.session.commit()
+        flash("Joukkue poistettu")
+        return True

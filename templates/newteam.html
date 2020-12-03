@@ -16,6 +16,8 @@ Joukkueen pelaajien käyttäjänimet:
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 <input type="submit" value="Luo joukkue">
 </form>
+{%else%}
+Kirjaudu sisään.
 {% endif %}
 <script>
     function check(form) {
