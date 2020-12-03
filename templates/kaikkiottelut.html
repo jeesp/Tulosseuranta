@@ -9,7 +9,7 @@
     <div class="ottelut">
         <h4>{{ ottelu[0] }} </h4><h4>-</h4><h4> {{ ottelu[1] }}</h4>
         <div class="joukkueet1">
-        {{ ottelu[2] }}
+        <h2>{{ ottelu[2] }}</h2>
         </div>
         <div class="ottelu">
             <ul class="ottelutiedot">
@@ -19,6 +19,7 @@
             <i>{{ ottelu [6] }} | Yläpeukut - Alapeukut | {{ ottelu [7] }} </i>
             </li>
             </ul>
+            
             <div class="ottelunappi">
                 <form action ="/ottelu/{{ ottelu[5] }}" method="POST">
                     <input type="hidden" name="otteluid" value="{{ ottelu[5] }}">
@@ -27,7 +28,7 @@
             </div>
         </div>
         <div class="joukkueet2">   
-        {{ ottelu[3] }}
+        <h2>{{ ottelu[3] }}</h2>
         </div>
         
         

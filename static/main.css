@@ -4,6 +4,7 @@ body {
     font-family: 'Helvetica', 'Arial', sans-serif;
     background-image:url("beerpong.jpg");
     background-attachment: fixed;
+    text-align:center;
 
 }
 html {
@@ -20,7 +21,8 @@ nav li {
 
 header {
     text-align:center;
-    background: #ff7e27;
+    background: black;
+    color: white;
     padding: 1.5em 2em;
     margin-bottom: 1vh;
     margin-top: 0;
@@ -28,9 +30,15 @@ header {
     margin-right: 0;
     border-radius: .5em;
     border-radius: .5em;
-    width:100%;
+    width:auto;
+    max-width:100%;
     height: auto;
 }
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
 form #button {
     grid-column-start: 2;
@@ -54,18 +62,42 @@ nav ul {
     text-align: center;
 }
 
-h2, h3 {
+h1 {
+    font-size: 4vw;
+    text-transform: uppercase;
+    color: #fff508;
+}
+h2{
     margin-top: 0;
-    font-size: 4em;
+    font-size: 3.5vw;
     text-align:center;
+    text-transform: uppercase;
+}
+
+h3 {
+    margin-top: 0;
+    font-size: 3vw;
+    text-align:center;
+    text-transform: uppercase;
+}
+
+h4 {
+    font-size:3vw;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: 0.2em;
+    float: left;
+    width: 33.33%;
 }
 
 .content {
+    display: inline-block;
     margin: 0 auto;
     background-color:rgba(255, 255, 255, 0.5);;
     padding: 2em 2em;
     border-radius: .5em;
-    max-width: 70%;
+    width: 70%;
     border: 3px solid #000000;
     
 }
@@ -76,15 +108,7 @@ h2, h3 {
   border-top:3px solid black;
   padding: 2vh;
 }
-h4 {
-    font-size:2em;
-    font-weight: bold;
-    text-transform: uppercase;
-    text-align: center;
-    letter-spacing: 0.2em;
-    float: left;
-    width: 33.33%;
-}
+
 .ottelu {
     box-sizing: border-box;
     float: left;
