@@ -1,42 +1,53 @@
 
 <!DOCTYPE html>
-<link rel="stylesheet" href="/static/main.css?2222122122222221222242236552125322222222222222222222222212222223222222222222222222221323442222222222222222222">
+<link rel="stylesheet" href="/static/main.css?2222122134312222222446534634422122224223655222125322222222222222222222222212222223222222222222222222221323442222222222222222222">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <meta name='viewport' content='width=device-width, initial-scale=1'>
     <header>
+        
         <title>Tulosseuranta - {% block title %}{% endblock %}</title>
         <h1>Tulosseuranta</h1>
 
         {% if session.user_id %}
         <p>Olet kirjautunut nimellä {{ session.username }}{% if session.admin == True %} (Admin) {% endif %}</p>
         {% endif %}
-        <nav>
-            <ul>
-                <li><a href="/">Etusivu</a></li>
-                <li><a href="/newteam">Luo joukkue</a></li>
-                <li><a href="/newmatch">Merkitse ottelu</a></li>
-                <li><a href="/highscoreteam">Parhaat joukkueet</a></li>
-
-                <li><a href="/highscoreplayer">Parhaat pelaajat</a></li>
-                <li><a href="/naytaottelut">Kaikki ottelut</a></li>
-                {% if session.user_id %}
-                <li><a href="/logout">Kirjaudu ulos</a></li>
+        <div class="topnav" id="myTopnav">
+            <a href="/" class="active">Etusivu</a>
+            <a href="/newteam">Luo joukkue</a>
+            <a href="/newmatch">Merkitse ottelu</a>
+            <a href="/highscoreteam">Parhaat joukkueet</a>
+            <a href="/highscoreplayer">Parhaat pelaajat</a>
+            <a href="/naytaottelut">Kaikki ottelut</a>
+            {% if session.admin == True %}
+                <a href="/modifymatch">Muokkaa otteluita</a>
+                <a href="/modifyteam">Muokkaa joukkueita</a>
+            {% endif %}
+            {% if session.user_id %}
+                <a href="/logout">Kirjaudu ulos</a>
                 {% else %}
-                <li><a href="/login">Kirjaudu sisään</a></li>
-                {% endif %}
-            </ul>
-        </nav>
-        {% if session.admin == True %}
-        <nav>
-            <ul>
-                <li><a href="/modifymatch">Muokkaa otteluita</a></li>
-                <li><a href="/modifyteam">Muokkaa joukkueita</a></li>
-            </ul>
-        </nav>
-        {% endif %}
+                <a href="/login">Kirjaudu sisään</a>
+            {% endif %}
+            
+            <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+              <i class="fa fa-bars"></i>
+            </a>
+        </div>
+          
+          
     </header>
     <body>
     <div class="content">
         {% block content %}{% endblock %}
     </div>
 </body>
+<script>
+    function myFunction() {
+      var x = document.getElementById("myTopnav");
+      if (x.className === "topnav") {
+        x.className += " responsive";
+      } else {
+        x.className = "topnav";
+      }
+    }
+    </script>
