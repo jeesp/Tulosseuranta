@@ -19,6 +19,7 @@ nav li {
     margin: .2em;
 }
 
+
 header {
     text-align:center;
     background: black;
@@ -33,6 +34,7 @@ header {
     width:auto;
     max-width:100%;
     height: auto;
+    font-size:1vw;
 }
 form {
     display: flex;
