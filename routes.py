@@ -83,6 +83,78 @@ def newteam():
             redirect("/")
         return render_template("newteam.html")
 
+@app.route("/modifyteam",methods=["GET", "POST"])
+def modifyteam():
+    if kirjautuminen.user_id == 0:
+        return redirect("/")
+    if kirjautuminen.is_admin(kirjautuminen.user_id()):
+        return render_template("modifyteam.html")
+    flash("Ei admin-oikeutta")
+    return redirect("/")
+
+@app.route("/modifyteamusers",methods=["GET", "POST"])
+def modifyteamusers():
+    if request.method == "GET":
+        return redirect("/")
+    if kirjautuminen.user_id == 0:
+        return redirect("/")
+    if kirjautuminen.is_admin(kirjautuminen.user_id()):
+        team = request.form["team"]
+        username1 = request.form["username1"]
+        username2 = request.form["username2"]
+        joukkueet.modify_players(username1,username2,team)
+        return render_template("modifyteam.html")
+    flash("Ei admin-oikeutta")
+    return redirect("/")
+
+@app.route("/deleteteam",methods=["GET", "POST"])
+def deleteteam():
+    if kirjautuminen.user_id == 0:
+        return redirect("/")
+    if kirjautuminen.is_admin(kirjautuminen.user_id()):
+        team = request.form["team"]
+        joukkueet.delete_team(team)
+        return render_template("modifyteam.html")
+    flash("Ei admin-oikeutta")
+    return redirect("/")
+
+@app.route("/modifymatch",methods=["GET", "POST"])
+def modifymatch():
+    if kirjautuminen.user_id == 0:
+        return redirect("/")
+    if kirjautuminen.is_admin(kirjautuminen.user_id()):
+        return render_template("modifymatch.html")
+    flash("Ei admin-oikeutta")
+    return redirect("/")
+
+@app.route("/deletematch",methods=["GET", "POST"])
+def deletematch():
+    if request.method == "GET":
+        return redirect("/")
+    if kirjautuminen.user_id == 0:
+        return redirect("/")
+    if kirjautuminen.is_admin(kirjautuminen.user_id()):
+        otteluid = request.form["otteluid"]
+        ottelut.delete_match(otteluid)
+        return render_template("modifymatch.html")
+    flash("Ei admin-oikeutta")
+    return redirect("/")
+
+@app.route("/modifymatchresult",methods=["GET", "POST"])
+def modifymatchresult():
+    if request.method == "GET":
+        return redirect("/")
+    if kirjautuminen.user_id == 0:
+        return redirect("/")
+    if kirjautuminen.is_admin(kirjautuminen.user_id()):
+        otteluid = request.form["otteluid"]
+        kotipoints = request.form["kotipoints"]
+        vieraspoints = request.form["vieraspoints"]
+        ottelut.ottelumuutos(otteluid, kotipoints, vieraspoints)
+        return render_template("modifymatch.html")
+    flash("Ei admin-oikeutta")
+    return redirect("/")
+
 @app.route("/newmatch",methods=["GET","POST"])
 def newmatch():
     return render_template("newmatch.html")
@@ -90,17 +162,24 @@ def newmatch():
 @app.route("/creatematch",methods=["GET","POST"])
 def creatematch():
     if request.method == "GET":
-        return render_template("index.html")
+        return redirect("/")
     if request.method == "POST":
         joukkue1 = request.form["team1"]
+        session["team1"] = joukkue1
         joukkue2 = request.form["team2"]
+        session["team2"] = joukkue2
         pisteet1 = request.form["team1points"]
+        session["team1points"] = pisteet1
         pisteet2 = request.form["team2points"]
+        session["team2points"] = pisteet2
         if len(joukkue1) < 1 or len(joukkue2) < 1  or len(pisteet1) < 1  or len(pisteet2) < 1:
             flash("Jokin kenttä oli tyhjä.")
             return render_template("newmatch.html") 
         if int(pisteet1) < 0 or int(pisteet1) > 10 or int(pisteet2) < 0 or int(pisteet2) > 10:
             flash("Nyt vaikuttaa huijaukselta.. Pisteitä liikaa tai liian vähän")
+            return render_template("newmatch.html")
+        if int(pisteet1) == int(pisteet2):
+            flash("Hmm... tasapeli? Ratkaistaan sudden deathilla")
             return render_template("newmatch.html")
         if session["csrf_token"] != request.form["csrf_token"]:
             abort(403)
@@ -116,8 +195,11 @@ def createteam():
         return render_template("index.html")
     if request.method == "POST":
         username1 = request.form["username1"]
+        session["username1"] = username1
         username2 = request.form["username2"]
+        session["username2"] = username2
         team = request.form["team"]
+        session["team"] = team
         if len(username1) < 1 or len(username2) < 1 or len(team) < 1:
             flash("Kenttä tyhjä")
             return render_template("newteam.html")

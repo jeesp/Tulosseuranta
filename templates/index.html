@@ -3,17 +3,25 @@
 {% for message in get_flashed_messages() %}
         <p>{{ message }}</p>
     {% endfor %}
-    <h3>Parhaat ottelut</h3>
+    <h2>Parhaat ottelut</h2>
     {% for ottelu in ottelut %}
 
         
     <div class="ottelut">
         <h4>{{ ottelu[0] }} </h4><h4>-</h4><h4> {{ ottelu[1] }}</h4>
         <div class="joukkueet1">
-        {{ ottelu[2] }}
+        <h2>{{ ottelu[2] }}</h2>
         </div>
         <div class="ottelu">
-            <ul class="ottelutiedot">
+            
+            
+            
+        </div>
+        
+        <div class="joukkueet2">   
+        <h2>{{ ottelu[3] }}</h2>
+        </div>
+        <ul class="ottelutiedot">
             <li>
             <i>Pelattu:</i> {{ ottelu[4].strftime("%Y-%m-%d %H:%M:%S") }}
             <li>
@@ -23,68 +31,12 @@
             <div class="ottelunappi">
                 <form action ="/ottelu/{{ ottelu[5] }}" method="POST">
                     <input type="hidden" name="otteluid" value="{{ ottelu[5] }}">
-                    <input type="submit" value="Näytä ottelun kommentit">
+                    <input type="submit" value="Näytä ottelu" class="button">
                 </form>
             </div>
-        </div>
-        <div class="joukkueet2">   
-        {{ ottelu[3] }}
-        </div>
-        
         
     </div>
     <div class="test"></div>
     {% endfor %}
-    <p>
-        
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-        asldjlsajlkjaecorepofflösjlkj
-
-    </p>
 
 {% endblock %}

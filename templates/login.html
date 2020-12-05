@@ -6,8 +6,6 @@
     {% endfor %}
 {% if session.user_id %}
 <p>Olet kirjautunut nimellä {{ session.username}}</p>
-<a href="/">Etusivu</a>
-<a href="/logout">Kirjaudu ulos</a>
 {% else %}
 <form action="/login" method="POST">
 
@@ -15,7 +13,7 @@
  
  
 <p>Tunnus:<br>
-<input type="text" name="username"></p>
+<input type="text" name="username" autofocus></p>
 <p>Salasana:<br>
 <input type="password" name="password"></p>
 <input type="submit" value="Kirjaudu">

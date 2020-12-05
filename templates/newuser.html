@@ -3,18 +3,15 @@
 {% block content %}
 {% if session.username %}
 <p>Olet kirjautunut nimellä {{ session.username }}</p>
-
-<a href="/">Etusivu</a>
-<a href="/logout">Kirjaudu ulos</a>
 {% else %}
-<h/2>Uusi käyttäjä</h>
+<h2>Uusi käyttäjä</h2>
 {% for message in get_flashed_messages() %}
         <p>{{ message }}</p>
     {% endfor %}
 
 <form action="/signin" method="POST" onsubmit="return check(this)">
 <p>Uusi tunnus:<br>
-<input type="text" name="username"></p>
+<input type="text" name="username" autofocus></p>
 <p>Uusi salasana:<br>
 <input type="password" name="password"></p>
 <input type="submit" value="Luo tunnus">

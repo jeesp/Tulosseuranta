@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+{% block title %}Ottelun muokkaus{% endblock %}
+{% block content %}
+<h2>Joukkueiden muokkaaminen</h2>
+<hr>
+{% if session.admin %}
+
+{% for message in get_flashed_messages() %}
+        <p>{{ message }}</p>
+        <hr>
+    {% endfor %}
+<h5> Pelaajien vaihtaminen</h5>
+<form action="/modifyteamusers" method="POST" required>
+Joukkueen nimi:
+<input type="text" name="team" autofocus required></p>
+Uusien pelaajien nimet:
+<br>
+1:
+<input type="text" name="username1" required></p>
+2:
+<input type="text" name="username2" required></p>
+
+<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+
+<input type="submit" value="Tee muutos" class="button">
+</form>
+<br>
+<hr>
+<br>
+<h5>Joukkueen poistaminen</h5>
+<form action="/deleteteam" method="POST" required>
+    Joukkueen nimi:
+    <input type="text" name="team" required></p>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    
+    <input type="submit" value="Poista joukkue" class="button">
+    </form>
+
+{% endif %}
+<script>
+    function check(form) {
+
+        if (form.team.value.length < 1) {
+            alert("Tyhjä kenttä");
+            return false;
+        }
+        if (form.kotipoints.value.length < 1) {
+            alert("Tyhjä kenttä");
+            return false;
+        }
+        if (form.vieraspoints.value.length < 1) {
+            alert("Tyhjä kenttä");
+            return false;
+        }
+
+
+        return true;
+    }
+    
+</script>
+
+{% endblock %}

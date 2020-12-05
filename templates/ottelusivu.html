@@ -2,47 +2,66 @@
 {% block title %}Uusi käyttäjä{% endblock %}
 {% block content %}
 {% if session.user_id %}
+<h2>Ottelusivu</h2>
+<div class="singlematch">
+    <h4>{{ ottelu[0] }} </h4><h4>-</h4><h4> {{ ottelu[1] }}</h4>
+    <div class="joukkueet1">
+    <h2>{{ ottelu[2] }}</h2>
+    </div>
+    
+    <div class="ottelu">
+    </div>
+    <div class="joukkueet2">   
+        <h2>{{ ottelu[3] }}</h2>
+        </div>
+        <ul class="ottelutiedot">
+        <li>
+        <i>Pelattu:</i> {{ ottelu[4].strftime("%Y-%m-%d %H:%M:%S") }}
+        <li>
+        <i>{{ ottelu [6] }} | Yläpeukut - Alapeukut | {{ ottelu [7] }} </i>
+        </li>
+        </ul>
+    
+    
+    
+</div>
 
-<h1>Ottelu {{ ottelu[0] }} vs  {{ ottelu[1] }}</h1>
-<i>{{ ottelu [6] }} | Yläpeukut - Alapeukut | {{ ottelu [7] }} </i>
-<i>Kotijoukkue: </i> {{ ottelu[0] }}
-    <p>
-    <i>Vierasjoukkue: </i> {{ ottelu[1] }}
-    <p>
-    <i>Kotijoukkueen pisteet: </i> {{ ottelu[2] }}
-    <p>
-    <i>Vierasjoukkueen pisteet: </i> {{ ottelu[3] }}
-    <p>
-    <i>Pelattu:</i> {{ ottelu[4].strftime("%Y") }}
-    {% for message in get_flashed_messages() %}
-        <p><b>{{ message }}</b></p>
-    {% endfor %}
+<div class="arvioinnit">
     <form action ="/ottelu/{{ ottelu[5] }}/lisaaArvio" method="POST">
         <input type="hidden" name="otteluid" value="{{ ottelu[5] }}">
         <input type="hidden" name="arvio" value="1">
-        <input type="submit" value="Anna yläpeukku bro">
+        <input type="submit" value="Anna yläpeukku" class="button">
     </form>
-    
+
     <form action ="/ottelu/{{ ottelu[5] }}/lisaaArvio" method="POST">
         <input type="hidden" name="otteluid" value="{{ ottelu[5] }}">
         <input type="hidden" name="arvio" value="-1">
-        <input type="submit" value="Huono peli bro">
+        <input type="submit" value="Anna alapeukku" class="button">
     </form>
-
-    <form action ="/ottelu/{{ ottelu[5] }}/lisaakommentti" method="POST" onsubmit="return check(this)">
-        <input type="text" name="viesti">
-        <input type="hidden" name="otteluid" value="{{ ottelu[5] }}">
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-        <input type="submit" value="Kommentoi ottelua">
-    </form>
+    
+</div>
+<br>
     <h3>Viestit</h3>
+    {% for message in get_flashed_messages() %}
+    <p><b>{{ message }}</b></p>
+{% endfor %}
+    
     {% for viesti in viestit %}
+    <div class="message">
     <i><b>Viesti:</b></i> {{ viesti[0] }}
     <p>
     <i><b>Lähettäjä:</b></i> {{ viesti[1] }}
     <p>
     <i><b>Aika:</b></i> {{ viesti[2].strftime("%Y-%m-%d %H:%M:%S") }}
+    </div>
+    <hr>
     {% endfor %}
+    <form action ="/ottelu/{{ ottelu[5] }}/lisaakommentti" method="POST" onsubmit="return check(this)">
+        <input type="text" name="viesti">
+        <input type="hidden" name="otteluid" value="{{ ottelu[5] }}">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        <input type="submit" value="Kommentoi" class="button">
+    </form>
     
     
 
