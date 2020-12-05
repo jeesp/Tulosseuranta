@@ -2,16 +2,19 @@
 {% block title %}Ottelun muokkaus{% endblock %}
 {% block content %}
 <h2>Joukkueiden muokkaaminen</h2>
-{% if session.user_id %}
+<hr>
+{% if session.admin %}
 
 {% for message in get_flashed_messages() %}
         <p>{{ message }}</p>
+        <hr>
     {% endfor %}
-<h5> Vaihda joukkueen pelaajia</h5>
+<h5> Pelaajien vaihtaminen</h5>
 <form action="/modifyteamusers" method="POST" required>
 Joukkueen nimi:
 <input type="text" name="team" autofocus required></p>
 Uusien pelaajien nimet:
+<br>
 1:
 <input type="text" name="username1" required></p>
 2:
@@ -19,15 +22,18 @@ Uusien pelaajien nimet:
 
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 
-<input type="submit" value="Tee muutos">
+<input type="submit" value="Tee muutos" class="button">
 </form>
-<h5>Poista joukkue</h5>
+<br>
+<hr>
+<br>
+<h5>Joukkueen poistaminen</h5>
 <form action="/deleteteam" method="POST" required>
     Joukkueen nimi:
     <input type="text" name="team" required></p>
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     
-    <input type="submit" value="Poista joukkue">
+    <input type="submit" value="Poista joukkue" class="button">
     </form>
 
 {% endif %}

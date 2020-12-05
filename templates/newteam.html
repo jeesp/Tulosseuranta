@@ -2,7 +2,7 @@
 {% block title %}Uusi käyttäjä{% endblock %}
 {% block content %}
 {% if session.user_id %}
-
+<h2>Uusi Joukkue</h2>
 {% for message in get_flashed_messages() %}
         <p>{{ message }}</p>
     {% endfor %}
@@ -14,10 +14,12 @@ Joukkueen pelaajien käyttäjänimet:
 <input type="text" name="username1" required value="{% if session.username1 %}{{session.username1}}{% endif %}"></p>
 <input type="text" name="username2" required value="{% if session.username2 %}{{session.username2}}{% endif %}"></p> <br>
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-<input type="submit" value="Luo joukkue">
+<input type="submit" value="Luo joukkue" class="button">
 </form>
 {%else%}
-Kirjaudu sisään.
+<form action ="/login" method="GET">
+    <input type="submit" value="Kirjaudu sisään">
+</form>
 {% endif %}
 <script>
     function check(form) {

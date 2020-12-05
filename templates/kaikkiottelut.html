@@ -1,9 +1,8 @@
 {% extends "layout.html" %}
 {% block title %}Kaikki ottelut{% endblock %}
 {% block content %}
-{% if session.user_id %}
 
-<h2>Ottelut</h2>
+<h2>Kaikki ottelut</h2>
 
     {% for ottelu in ottelut %}
     <div class="ottelut">
@@ -12,34 +11,29 @@
         <h2>{{ ottelu[2] }}</h2>
         </div>
         <div class="ottelu">
-            <ul class="ottelutiedot">
+            
+            
+            
+        </div>
+        
+        <div class="joukkueet2">   
+        <h2>{{ ottelu[3] }}</h2>
+        </div>
+        <ul class="ottelutiedot">
             <li>
             <i>Pelattu:</i> {{ ottelu[4].strftime("%Y-%m-%d %H:%M:%S") }}
             <li>
             <i>{{ ottelu [6] }} | Yläpeukut - Alapeukut | {{ ottelu [7] }} </i>
             </li>
             </ul>
-            
             <div class="ottelunappi">
                 <form action ="/ottelu/{{ ottelu[5] }}" method="POST">
                     <input type="hidden" name="otteluid" value="{{ ottelu[5] }}">
-                    <input type="submit" value="Näytä ottelu">
+                    <input type="submit" value="Näytä ottelu" class="button">
                 </form>
             </div>
-        </div>
-        <div class="joukkueet2">   
-        <h2>{{ ottelu[3] }}</h2>
-        </div>
-        
         
     </div>
     <div class="test"></div>
     {% endfor %}
-
-{% else %}
-    <form action ="/login" method="GET">
-        <input type="submit" value="Kirjaudu sisään">
-    </form>
-
-{% endif %}
 {% endblock %}

@@ -1,12 +1,16 @@
 {% extends "layout.html" %}
 {% block title %}Ottelun muokkaus{% endblock %}
 {% block content %}
-{% if session.user_id %}
+{% if session.admin %}
 
+
+<h2> Otteluiden muokkaaminen</h2>
+<hr>
 {% for message in get_flashed_messages() %}
         <p>{{ message }}</p>
+        <hr>
     {% endfor %}
-<h2> Tuloksen muokkaus</h2>
+<h5>Ottelun tuloksen muokkaaminen</h5>
 <form action="/modifymatchresult" method="POST" required>
 Ottelun ID:
 <input type="text" name="otteluid" autofocus required></p>
@@ -16,15 +20,18 @@ Vierasjoukkueen pisteet:
 <input type="number" name="vieraspoints" required></p>
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 
-<input type="submit" value="Syötä uusi tulos">
+<input type="submit" value="Syötä uusi tulos" class="button">
 </form>
-Ottelun poisto
+<br>
+<hr>
+<br>
+<h5>Ottelun poistaminen</h5>
 <form action="/deletematch" method="POST" required>
     Ottelun ID:
     <input type="text" name="otteluid" required></p>
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     
-    <input type="submit" value="Poista ottelu">
+    <input type="submit" value="Poista ottelu" class="button">
     </form>
 
 {% endif %}

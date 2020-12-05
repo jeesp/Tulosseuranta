@@ -12,6 +12,7 @@ body {
 html {
     margin: 0;
     padding: 0;
+    padding-bottom:2em;
 }
 .topnav {
     overflow: hidden;
@@ -34,8 +35,11 @@ html {
   }
   
   .topnav a.active {
+    color: #fff508;
+  }
+  .topnav a.active:hover {
     background-color: #fff508;
-    color: black;
+      color:black;
   }
   
   .topnav .icon {
@@ -53,6 +57,33 @@ html {
         text-transform: uppercase;
         color: #fff508;
     }
+    h2{
+        margin-top: 0;
+        font-size: 6vw;
+        text-align:center;
+        text-transform: uppercase;
+    }
+    
+    h3 {
+        margin-top: 0;
+        font-size: 5vw;
+        text-align:center;
+        text-transform: uppercase;
+    }
+    
+    h4 {
+        font-size:3.5vw;
+        font-weight: bold;
+        text-transform: uppercase;
+        text-align: center;
+        letter-spacing: 0.2em;
+        float: left;
+        width: 33.33%;
+    }
+    h5 {
+        font-size:3.5vw;
+        text-align: center;
+    }
   }
   @media screen and (min-width: 600px) {
 
@@ -60,6 +91,33 @@ html {
         font-size: 4vw;
         text-transform: uppercase;
         color: #fff508;
+    }
+    h2{
+        margin-top: 0;
+        font-size: 3.5vw;
+        text-align:center;
+        text-transform: uppercase;
+    }
+    
+    h3 {
+        margin-top: 0;
+        font-size: 3vw;
+        text-align:center;
+        text-transform: uppercase;
+    }
+    
+    h4 {
+        font-size:3vw;
+        font-weight: bold;
+        text-transform: uppercase;
+        text-align: center;
+        letter-spacing: 0.2em;
+        float: left;
+        width: 33.33%;
+    }
+    h5 {
+        font-size:2vw;
+        text-align: center;
     }
   }
   
@@ -69,7 +127,6 @@ html {
       position: absolute;
       right: 0;
       top: 0;
-      color:black;
     }
     .topnav.responsive a {
       float: none;
@@ -77,18 +134,41 @@ html {
       text-align: left;
     }
   }
-
-
+  .button {
+    border: none;
+    color: black;
+    text-align: center;
+    text-decoration: none;
+    background: transparent;
+    font-weight: bold;
+    display: inline-block;
+    margin: 4px 2px;
+    cursor: pointer;
+    font-size:1.5em;
+  }
+  .button:hover {
+      color:#fff508;
+  }
+  .arvioinnit {
+      clear:both;
+      text-align: center;
+  }
+  .message {
+      text-align:left;
+  }
 header {
     text-align:center;
     background: black;
     color: white;
     margin: 0;
     padding-top: 2em;
-    margin-bottom: 1vh;
+    margin-bottom: 2em;
     width:auto;
     max-width:100%;
     height: auto;
+}
+.scoretable {
+    width:100%;
 }
 form {
     display: flex;
@@ -118,31 +198,6 @@ nav ul {
     text-align: center;
 }
 
-
-h2{
-    margin-top: 0;
-    font-size: 3.5vw;
-    text-align:center;
-    text-transform: uppercase;
-}
-
-h3 {
-    margin-top: 0;
-    font-size: 3vw;
-    text-align:center;
-    text-transform: uppercase;
-}
-
-h4 {
-    font-size:3vw;
-    font-weight: bold;
-    text-transform: uppercase;
-    text-align: center;
-    letter-spacing: 0.2em;
-    float: left;
-    width: 33.33%;
-}
-
 .content {
     display: inline-block;
     margin: 0 auto;
@@ -158,6 +213,12 @@ h4 {
     max-width: 100%;
   color:black;
   border-top:3px solid black;
+  padding: 2vh;
+}
+
+.singlematch {
+    max-width: 100%;
+  color:black;
   padding: 2vh;
 }
 
@@ -201,7 +262,6 @@ h4 {
     box-sizing: border-box;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 5em;
 }
 
 nav li a {

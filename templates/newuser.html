@@ -3,11 +3,8 @@
 {% block content %}
 {% if session.username %}
 <p>Olet kirjautunut nimellä {{ session.username }}</p>
-
-<a href="/">Etusivu</a>
-<a href="/logout">Kirjaudu ulos</a>
 {% else %}
-<h/2>Uusi käyttäjä</h>
+<h2>Uusi käyttäjä</h2>
 {% for message in get_flashed_messages() %}
         <p>{{ message }}</p>
     {% endfor %}

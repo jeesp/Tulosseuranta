@@ -1,19 +1,26 @@
 {% extends "layout.html" %}
-{% block title %}Uusi käyttäjä{% endblock %}
+{% block title %}Hall of losers{% endblock %}
 {% block content %}
-{% if session.user_id %}
-<h1>Hall of losers</h1>
-<hr>
-<p>Pelaaja | Voitot | Häviöt | KD-Ratio</p>
-{% for pelaaja in pelaajat %}
-<p> {{ pelaaja[0] }} | {{ pelaaja[1] }} | {{ pelaaja[2] }} | {{ pelaaja[3] }}</p>
 
-{% endfor %}
-<a href="/highscoreplayer">Näytä parhaat? </a>
+<h2>Hall of losers</h2>
 <hr>
-<a href="/logout">Kirjaudu ulos</a>
-<a href="/" >Etusivu</a>
-{% else %}
-<a href="/login">Kirjaudu sisään</a>
-{% endif %}
+<table class="scoretable">
+    <tr>
+      <th>Pelaaja</th>
+      <th>Voitot</th>
+      <th>Häviöt</th>
+      <th>KD-Ratio</th>
+    </tr>
+{% for pelaaja in pelaajat %}
+    <tr>
+      <td>{{ pelaaja[0] }}</td>
+      <td>{{ pelaaja[1] }}</td>
+      <td>{{ pelaaja[2] }}</td>
+      <td>{{ pelaaja[3] }}</td>
+    </tr>
+{% endfor %}
+</table>
+<hr>
+<a href="/highscoreplayer">Näytä sittenkin parhaat?</a>
+
 {% endblock %}

@@ -6,8 +6,6 @@
     {% endfor %}
 {% if session.user_id %}
 <p>Olet kirjautunut nimellä {{ session.username}}</p>
-<a href="/">Etusivu</a>
-<a href="/logout">Kirjaudu ulos</a>
 {% else %}
 <form action="/login" method="POST">
 

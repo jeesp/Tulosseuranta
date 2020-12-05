@@ -1,20 +1,26 @@
 {% extends "layout.html" %}
-{% block title %}Uusi käyttäjä{% endblock %}
+{% block title %}Hall of fame{% endblock %}
 {% block content %}
-{% if session.user_id %}
 
-<h1>Hall of fame</h1>
+<h2>Hall of fame</h2>
 <hr>
-<p>Joukkue | Voitot | Häviöt | KD-Ratio</p>
+<table class="scoretable">
+    <tr>
+      <th>Joukkue</th>
+      <th>Voitot</th>
+      <th>Häviöt</th>
+      <th>KD-Ratio</th>
+    </tr>
 {% for joukkue in joukkueet %}
-<p> {{ joukkue[0] }} | {{ joukkue[1] }} | {{ joukkue[2] }} | {{ joukkue[3] }} |</p>
-
+    <tr>
+      <td>{{ joukkue[0] }}</td>
+      <td>{{ joukkue[1] }}</td>
+      <td>{{ joukkue[2] }}</td>
+      <td>{{ joukkue[3] }}</td>
+    </tr>
 {% endfor %}
-<a href="/lowscoreteam">Näytä sittenkin huonoimmat?</a>
+</table>
 <hr>
-<a href="/logout">Kirjaudu ulos</a>
-<a href="/" >Etusivu</a>
-{% else %}
-<a href="/login">Kirjaudu sisään</a>
-{% endif %}
+<a href="/lowscoreteam">Näytä sittenkin huonoimmat?</a>
+
 {% endblock %}

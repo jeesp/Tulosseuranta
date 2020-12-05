@@ -2,8 +2,7 @@
 {% block title %}Uusi käyttäjä{% endblock %}
 {% block content %}
 {% if session.user_id %}
-<p>Olet kirjautunut nimellä {{ session.username }}</p>
-
+<h2>Uusi ottelu</h2>
 {% for message in get_flashed_messages() %}
         <p>{{ message }}</p>
     {% endfor %}
@@ -21,9 +20,12 @@ Toisen joukkueen upottamat mukit:
 <input type="number" name="team2points" required value="{% if session.team2points %}{{session.team2points}}{% endif %}"></p>
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 
-<input type="submit" value="Syötä tulos">
+<input type="submit" value="Syötä tulos" class="button">
 </form>
-
+{%else%}
+<form action ="/login" method="GET">
+    <input type="submit" value="Kirjaudu sisään">
+</form>
 {% endif %}
 <script>
     function check(form) {
