@@ -1,25 +1,25 @@
-from flask import Flask
 from flask import redirect, render_template, request, session, flash
-from os import getenv
-from werkzeug.security import check_password_hash, generate_password_hash
-from flask_sqlalchemy import SQLAlchemy
-from db import db
 from app import app
-import os
-import kirjautuminen, joukkueet, ottelut, highscore, viestit, arviot
+import login
+import teams
+import matches
+import highscore
+import messages
+import ratings
+
 
 @app.route("/")
 def index():
-    list = ottelut.kolmeparastaottelua()
+    list = matches.three_best_matches()
     return render_template("index.html", ottelut=list)
 
-@app.route("/naytaottelut")
-def naytaottelut():
-    list = ottelut.OttelutSuosituinEnsin()
+@app.route("/show_matches")
+def show_matches():
+    list = matches.matches_favorite_first()
     return render_template("kaikkiottelut.html", ottelut=list)
 
-@app.route("/signin",methods=["GET","POST"])
-def signin():
+@app.route("/sign_in", methods=["GET", "POST"])
+def sign_in():
     if request.method == "GET":
         return render_template("newuser.html")
     if request.method == "POST":
@@ -29,30 +29,29 @@ def signin():
             flash("Tyhjä kenttä")
             return render_template("newuser.html")
         if len(password) < 4:
-            flash ("Salasana liian lyhyt, pitää olla vähintään 4 merkkiä.")
+            flash("Salasana liian lyhyt, pitää olla vähintään 4 merkkiä.")
             return render_template("newuser.html")
         if len(username) > 30:
             flash("Käyttäjänimi liian pitkä, alle 30 sallittu")
-        if kirjautuminen.uusikayttaja(username,password):
-            return render_template("login.html")
-        else:
             return render_template("newuser.html")
-    
-@app.route("/newuser",methods=["GET","POST"])
+        if login.new_user(username, password):
+            return render_template("login.html")
+        return render_template("newuser.html")
+
+@app.route("/newuser", methods=["GET", "POST"])
 def newuser():
-    
     return render_template("newuser.html")
 
-@app.route("/ottelu/<int:otteluid>",methods=["GET","POST"])
-def ottelu(otteluid):
+@app.route("/ottelu/<int:otteluid>", methods=["GET", "POST"])
+def match(otteluid):
     if request.method == "GET":
         return redirect("/")
     if request.method == "POST":
-        list = ottelut.paivitaOttelusivu(otteluid)
+        list = matches.refresh_match_page(otteluid)
         return render_template("ottelusivu.html", ottelu=list[0], viestit=list[1])
 
-@app.route("/ottelu/<int:otteluid>/lisaakommentti", methods=["GET","POST"])
-def lisakommentti(otteluid):
+@app.route("/ottelu/<int:otteluid>/lisaakommentti", methods=["GET", "POST"])
+def add_comment(otteluid):
     if request.method == "GET":
         return redirect("/")
     if request.method == "POST":
@@ -63,104 +62,104 @@ def lisakommentti(otteluid):
             flash("Liian pitkä viesti")
         if session["csrf_token"] != request.form["csrf_token"]:
             abort(403)
-        viestit.LahetaViesti(otteluid,viesti)
-        list = ottelut.paivitaOttelusivu(otteluid)
+        messages.send_message(otteluid, viesti)
+        list = matches.refresh_match_page(otteluid)
         return render_template("ottelusivu.html", ottelu=list[0], viestit=list[1])
 
-@app.route("/ottelu/<int:otteluid>/lisaaArvio", methods=["GET","POST"])
-def lisaaArvio(otteluid):
+@app.route("/ottelu/<int:otteluid>/lisaaArvio", methods=["GET", "POST"])
+def add_rating(otteluid):
     if request.method == "GET":
         return redirect("/")
     if request.method == "POST":
         arvio = request.form["arvio"]
-        arviot.LisaaArvio(kirjautuminen.user_id(),otteluid, arvio)
-        list = ottelut.paivitaOttelusivu(otteluid)
+        ratings.add_rating(login.user_id(), otteluid, arvio)
+        list = matches.refresh_match_page(otteluid)
         return render_template("ottelusivu.html", ottelu=list[0], viestit=list[1])
 
-@app.route("/newteam",methods=["GET", "POST"])
-def newteam():
-        if kirjautuminen.user_id == 0:
-            redirect("/")
-        return render_template("newteam.html")
+@app.route("/newteam", methods=["GET", "POST"])
+def new_team():
+    if login.user_id == 0:
+        redirect("/")
+    return render_template("newteam.html")
 
-@app.route("/modifyteam",methods=["GET", "POST"])
-def modifyteam():
-    if kirjautuminen.user_id == 0:
+@app.route("/modifyteam", methods=["GET", "POST"])
+def modify_team():
+    if login.user_id == 0:
         return redirect("/")
-    if kirjautuminen.is_admin(kirjautuminen.user_id()):
+    if login.is_admin(login.user_id()):
         return render_template("modifyteam.html")
     flash("Ei admin-oikeutta")
     return redirect("/")
 
-@app.route("/modifyteamusers",methods=["GET", "POST"])
-def modifyteamusers():
+@app.route("/modifyteamusers", methods=["GET", "POST"])
+def modify_team_users():
     if request.method == "GET":
         return redirect("/")
-    if kirjautuminen.user_id == 0:
+    if login.user_id == 0:
         return redirect("/")
-    if kirjautuminen.is_admin(kirjautuminen.user_id()):
+    if login.is_admin(login.user_id()):
         team = request.form["team"]
         username1 = request.form["username1"]
         username2 = request.form["username2"]
-        joukkueet.modify_players(username1,username2,team)
+        teams.modify_players(username1, username2, team)
         return render_template("modifyteam.html")
     flash("Ei admin-oikeutta")
     return redirect("/")
 
-@app.route("/deleteteam",methods=["GET", "POST"])
-def deleteteam():
-    if kirjautuminen.user_id == 0:
+@app.route("/deleteteam", methods=["GET", "POST"])
+def delete_team():
+    if login.user_id == 0:
         return redirect("/")
-    if kirjautuminen.is_admin(kirjautuminen.user_id()):
+    if login.is_admin(login.user_id()):
         team = request.form["team"]
-        joukkueet.delete_team(team)
+        teams.delete_team(team)
         return render_template("modifyteam.html")
     flash("Ei admin-oikeutta")
     return redirect("/")
 
-@app.route("/modifymatch",methods=["GET", "POST"])
-def modifymatch():
-    if kirjautuminen.user_id == 0:
+@app.route("/modifymatch", methods=["GET", "POST"])
+def modify_match():
+    if login.user_id == 0:
         return redirect("/")
-    if kirjautuminen.is_admin(kirjautuminen.user_id()):
+    if login.is_admin(login.user_id()):
         return render_template("modifymatch.html")
     flash("Ei admin-oikeutta")
     return redirect("/")
 
-@app.route("/deletematch",methods=["GET", "POST"])
-def deletematch():
+@app.route("/deletematch", methods=["GET", "POST"])
+def delete_match():
     if request.method == "GET":
         return redirect("/")
-    if kirjautuminen.user_id == 0:
+    if login.user_id == 0:
         return redirect("/")
-    if kirjautuminen.is_admin(kirjautuminen.user_id()):
+    if login.is_admin(login.user_id()):
         otteluid = request.form["otteluid"]
-        ottelut.delete_match(otteluid)
+        matches.delete_match(otteluid)
         return render_template("modifymatch.html")
     flash("Ei admin-oikeutta")
     return redirect("/")
 
-@app.route("/modifymatchresult",methods=["GET", "POST"])
-def modifymatchresult():
+@app.route("/modifymatchresult", methods=["GET", "POST"])
+def modify_match_result():
     if request.method == "GET":
         return redirect("/")
-    if kirjautuminen.user_id == 0:
+    if login.user_id == 0:
         return redirect("/")
-    if kirjautuminen.is_admin(kirjautuminen.user_id()):
+    if login.is_admin(login.user_id()):
         otteluid = request.form["otteluid"]
-        kotipoints = request.form["kotipoints"]
-        vieraspoints = request.form["vieraspoints"]
-        ottelut.ottelumuutos(otteluid, kotipoints, vieraspoints)
+        homepoints = request.form["homepoints"]
+        awaypoints = request.form["awaypoints"]
+        matches.match_modify(otteluid, homepoints, awaypoints)
         return render_template("modifymatch.html")
     flash("Ei admin-oikeutta")
     return redirect("/")
 
-@app.route("/newmatch",methods=["GET","POST"])
-def newmatch():
+@app.route("/newmatch", methods=["GET", "POST"])
+def new_match():
     return render_template("newmatch.html")
 
-@app.route("/creatematch",methods=["GET","POST"])
-def creatematch():
+@app.route("/creatematch", methods=["GET", "POST"])
+def create_match():
     if request.method == "GET":
         return redirect("/")
     if request.method == "POST":
@@ -174,7 +173,7 @@ def creatematch():
         session["team2points"] = pisteet2
         if len(joukkue1) < 1 or len(joukkue2) < 1  or len(pisteet1) < 1  or len(pisteet2) < 1:
             flash("Jokin kenttä oli tyhjä.")
-            return render_template("newmatch.html") 
+            return render_template("newmatch.html")
         if int(pisteet1) < 0 or int(pisteet1) > 10 or int(pisteet2) < 0 or int(pisteet2) > 10:
             flash("Nyt vaikuttaa huijaukselta.. Pisteitä liikaa tai liian vähän")
             return render_template("newmatch.html")
@@ -183,14 +182,13 @@ def creatematch():
             return render_template("newmatch.html")
         if session["csrf_token"] != request.form["csrf_token"]:
             abort(403)
-        if ottelut.ottelupelattu(joukkue1,joukkue2,pisteet1,pisteet2):
+        if matches.match_played(joukkue1, joukkue2, pisteet1, pisteet2):
 
             return redirect("/")
-        else:
-            return render_template("newmatch.html")
+        return render_template("newmatch.html")
 
-@app.route("/createteam",methods=["GET","POST"])
-def createteam():
+@app.route("/createteam", methods=["GET", "POST"])
+def create_team():
     if request.method == "GET":
         return render_template("index.html")
     if request.method == "POST":
@@ -203,38 +201,37 @@ def createteam():
         if len(username1) < 1 or len(username2) < 1 or len(team) < 1:
             flash("Kenttä tyhjä")
             return render_template("newteam.html")
-        if len(team) > 50:
+        if len(team) > 20:
             flash("Liian pitkä nimi joukkueella")
             return render_template("newteam.html")
         if session["csrf_token"] != request.form["csrf_token"]:
             abort(403)
-        if joukkueet.createteam(username1,username2,team):
+        if teams.create_team(username1, username2, team):
             return redirect("/")
-        else:
-            return render_template("newteam.html")
+        return render_template("newteam.html")
 
-@app.route("/highscoreteam",methods=["GET","POST"])
-def highscores():
-    list = highscore.highscoreteam()
+@app.route("/highscoreteam", methods=["GET", "POST"])
+def highscore_for_teams():
+    list = highscore.highscore_for_teams()
     return render_template("highscoreteam.html", joukkueet=list)
 
-@app.route("/lowscoreteam",methods=["GET","POST"])
-def lowscores():
-    list = highscore.lowscoreteam()
+@app.route("/lowscoreteam", methods=["GET", "POST"])
+def lowscore_for_teams():
+    list = highscore.lowscore_for_teams()
     return render_template("lowscoreteam.html", joukkueet=list)
 
-@app.route("/highscoreplayer",methods=["GET","POST"])
-def highscoreplayer():
-    list = highscore.highscoreplayer()
+@app.route("/highscoreplayer", methods=["GET", "POST"])
+def highscore_for_players():
+    list = highscore.highscore_for_players()
     return render_template("highscoreplayer.html", pelaajat=list)
 
-@app.route("/lowscoreplayer",methods=["GET","POST"])
-def lowscoreplayer():
-    list = highscore.lowscoreplayer()
+@app.route("/lowscoreplayer", methods=["GET", "POST"])
+def lowscore_for_players():
+    list = highscore.lowscore_for_players()
     return render_template("lowscoreplayer.html", pelaajat=list)
-    
-@app.route("/login",methods=["GET","POST"])
-def login():
+
+@app.route("/login", methods=["GET", "POST"])
+def log_in():
     if request.method == "GET":
         return render_template("login.html")
     if request.method == "POST":
@@ -243,15 +240,14 @@ def login():
         if len(username) < 1 or len(password) < 1:
             flash("Tyhjä kenttä")
             return render_template("login.html")
-        if kirjautuminen.tarkistus(username,password):
+        if login.check(username, password):
             return redirect("/")
-        else:
-            return render_template("login.html")
+        return render_template("login.html")
 
 @app.route("/logout")
-def logout():
-    flash ("Hate to see you leave")
-    if kirjautuminen.is_admin(session["user_id"]):
+def log_out():
+    flash("Hate to see you leave")
+    if login.is_admin(session["user_id"]):
         del session["admin"]
     del session["user_id"]
     del session["username"]

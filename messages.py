@@ -1,19 +1,19 @@
 from db import db
-import kirjautuminen
+import login
 from flask import redirect, render_template, request, session, flash
 
-def Viestit():
+def get_messages():
     sql = "SELECT K.viesti, U.username, K.aika FROM Kommentit K, users U WHERE K.kayttaja_id=U.id ORDER BY K.id DESC"
     result = db.session.execute(sql)
     return result.fetchall()
 
-def OttelunViestit(id):
+def get_messages_by_match_id(id):
     sql = "SELECT K.viesti, U.username, K.aika FROM Kommentit K, users U, Ottelut O WHERE O.id=:id AND O.id=K.ottelu_id AND K.kayttaja_id=U.id ORDER BY K.aika DESC"
     result = db.session.execute(sql, {"id":id})
     return result.fetchall()
 
-def LahetaViesti(otteluid, viesti):
-    userid = kirjautuminen.user_id()
+def send_message(otteluid, viesti):
+    userid = login.user_id()
     if userid == 0 or len(viesti) < 1 or len(viesti) > 500:
         flash("Viestin lähetys epäonnistui")
         return

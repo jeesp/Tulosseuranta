@@ -18,7 +18,8 @@ Joukkueen pelaajien käyttäjänimet:
 </form>
 {%else%}
 <form action ="/login" method="GET">
-    <input type="submit" value="Kirjaudu sisään">
+    <p>Kirjaudu sisään jos haluat luoda joukkueen.</p>
+    <input type="submit" value="Kirjaudu sisään" class="button">
 </form>
 {% endif %}
 <script>
@@ -28,8 +29,8 @@ Joukkueen pelaajien käyttäjänimet:
             alert("Tyhjä kenttä");
             return false;
         }
-        if (form.team.value.length > 50) {
-            alert("Liian pitkä nimi joukkueella");
+        if (form.team.value.length > 20) {
+            alert("Liian pitkä nimi joukkueella (max 2o merkkiä)");
             return false;
 
         }

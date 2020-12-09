@@ -73,12 +73,12 @@ html {
     
     h4 {
         font-size:3.5vw;
-        font-weight: bold;
         text-transform: uppercase;
         text-align: center;
         letter-spacing: 0.2em;
         float: left;
         width: 33.33%;
+        font-weight:lighter;
     }
     h5 {
         font-size:3.5vw;
@@ -108,12 +108,12 @@ html {
     
     h4 {
         font-size:3vw;
-        font-weight: bold;
         text-transform: uppercase;
         text-align: center;
         letter-spacing: 0.2em;
         float: left;
         width: 33.33%;
+        font-weight:lighter;
     }
     h5 {
         font-size:2vw;
@@ -140,7 +140,7 @@ html {
     text-align: center;
     text-decoration: none;
     background: transparent;
-    font-weight: bold;
+    font-weight: 500;
     display: inline-block;
     margin: 4px 2px;
     cursor: pointer;
@@ -212,7 +212,7 @@ nav ul {
 .ottelut {
     max-width: 100%;
   color:black;
-  border-top:3px solid black;
+  border-top:1px solid black;
   padding: 2vh;
 }
 
@@ -264,11 +264,3 @@ nav ul {
     margin-right: auto;
 }
 
-nav li a {
-    text-decoration: none;
-    color: #000;
-}
-
-nav li:hover {
-    background-color: rgb(226, 226, 226);
-}

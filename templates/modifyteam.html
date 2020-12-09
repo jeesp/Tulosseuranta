@@ -35,7 +35,8 @@ Uusien pelaajien nimet:
     
     <input type="submit" value="Poista joukkue" class="button">
     </form>
-
+    {%else%}
+    <p>Sinulla ei ole admin-oikeuksia.</p>
 {% endif %}
 <script>
     function check(form) {
