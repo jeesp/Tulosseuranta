@@ -15,9 +15,9 @@
 Ottelun ID:
 <input type="text" name="otteluid" autofocus required></p>
 Oikea lopputulos, kotijoukkueen pisteet:
-<input type="number" name="kotipoints" required></p>
+<input type="number" name="homepoints" required></p>
 Vierasjoukkueen pisteet:
-<input type="number" name="vieraspoints" required></p>
+<input type="number" name="awaypoints" required></p>
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 
 <input type="submit" value="Syötä uusi tulos" class="button">
@@ -33,8 +33,9 @@ Vierasjoukkueen pisteet:
     
     <input type="submit" value="Poista ottelu" class="button">
     </form>
-
-{% endif %}
+    {%else%}
+        <p>Sinulla ei ole admin-oikeuksia.</p>
+    {% endif %}
 <script>
     function check(form) {
 

@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block title %}Uusi käyttäjä{% endblock %}
 {% block content %}
-{% if session.user_id %}
+
 <h2>Ottelusivu</h2>
 <div class="singlematch">
     <h4>{{ ottelu[0] }} </h4><h4>-</h4><h4> {{ ottelu[1] }}</h4>
@@ -25,7 +25,7 @@
     
     
 </div>
-
+{% if session.user_id %}
 <div class="arvioinnit">
     <form action ="/ottelu/{{ ottelu[5] }}/lisaaArvio" method="POST">
         <input type="hidden" name="otteluid" value="{{ ottelu[5] }}">
@@ -40,6 +40,7 @@
     </form>
     
 </div>
+{% endif %}
 <br>
     <h3>Viestit</h3>
     {% for message in get_flashed_messages() %}
@@ -56,21 +57,22 @@
     </div>
     <hr>
     {% endfor %}
+    {% if session.user_id %}
     <form action ="/ottelu/{{ ottelu[5] }}/lisaakommentti" method="POST" onsubmit="return check(this)">
         <input type="text" name="viesti">
         <input type="hidden" name="otteluid" value="{{ ottelu[5] }}">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         <input type="submit" value="Kommentoi" class="button">
     </form>
-    
-    
-
-{% else %}
+    {% else %}
     <form action ="/login" method="GET">
-        <input type="submit" value="Kirjaudu sisään">
+        <p>Kirjaudu sisään, jos haluat kommentoida.</p>
+        <input type="submit" value="Kirjaudu sisään" class="button">
     </form>
+    {% endif %}
+    
 
-{% endif %}
+
 <script>
     function check(form) {
 

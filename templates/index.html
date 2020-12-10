@@ -1,9 +1,10 @@
 {% extends "layout.html" %}
 {% block content %}
-{% for message in get_flashed_messages() %}
+
+    <h2>Parhaat ottelut</h2>
+    {% for message in get_flashed_messages() %}
         <p>{{ message }}</p>
     {% endfor %}
-    <h2>Parhaat ottelut</h2>
     {% for ottelu in ottelut %}
 
         

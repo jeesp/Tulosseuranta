@@ -8,18 +8,16 @@
 <p>Olet kirjautunut nimellä {{ session.username}}</p>
 {% else %}
 <form action="/login" method="POST">
-
-
- 
- 
 <p>Tunnus:<br>
 <input type="text" name="username" autofocus></p>
 <p>Salasana:<br>
 <input type="password" name="password"></p>
-<input type="submit" value="Kirjaudu">
+<input type="submit" value="Kirjaudu" class="button">
 </form>
+<hr>
+<p>Uusi käyttäjä?</p>
 <form action ="/newuser" method="POST">
-<input type="submit" value="Luo tunnus">
+<input type="submit" value="Luo tunnus" class="button">
 </form>
 {% endif %}
 {% endblock %}

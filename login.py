@@ -7,7 +7,7 @@ from db import db
 from app import app
 import os
 
-def tarkistus(username, password):
+def check(username, password):
     sql = "SELECT password, id FROM users WHERE username=:username"
     result = db.session.execute(sql, {"username":username})
     user = result.fetchone()    
@@ -39,7 +39,7 @@ def is_admin(id):
     else:
         return False
 
-def uusikayttaja(username,password):
+def new_user(username,password):
     hash_value = generate_password_hash(password)
     sql = "SELECT username FROM users WHERE username=:username"
     result = db.session.execute(sql, {"username":username})

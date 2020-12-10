@@ -1,7 +1,8 @@
 
 <!DOCTYPE html>
-<link rel="stylesheet" href="/static/main.css?22221221343122222224465346344443232232282322222222222s72232522122224223655222125322222222222222222222222212222223222222222222222222221323442222222222222222222">
+<link rel="stylesheet" href="/static/main.css?22221222222222222222222323222222252222223422231222222243246534634422443232232282322222222222s72232522122224223655222125322222222222222222222222212222223222222222222222222221323442222222222222222222">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
 <meta name='viewport' content='width=device-width, initial-scale=1'>
     <header>
@@ -18,7 +19,7 @@
             <a href="/newmatch">Merkitse ottelu</a>
             <a href="/highscoreteam">Parhaat joukkueet</a>
             <a href="/highscoreplayer">Parhaat pelaajat</a>
-            <a href="/naytaottelut">Kaikki ottelut</a>
+            <a href="/show_matches">Kaikki ottelut</a>
             {% if session.admin == True %}
                 <a href="/modifymatch">Muokkaa otteluita</a>
                 <a href="/modifyteam">Muokkaa joukkueita</a>
@@ -39,6 +40,9 @@
     <body>
     <div class="content">
         {% block content %}{% endblock %}
+        <br>
+        <hr>
+        <p style="font-size: 2vh;"><i>"Calicem in pila seminabis"</i> - Julius Caesar, 45 eKr.</p>
     </div>
 </body>
 <script>
