@@ -136,7 +136,7 @@ def delete_match():
     if login.user_id == 0:
         return redirect("/")
     if login.is_admin(login.user_id()):
-        match_id = request.form["otteluid"]
+        match_id = request.form["match_id"]
         matches.delete_match(match_id)
         return render_template("adminpage.html")
     flash("Ei admin-oikeutta")
