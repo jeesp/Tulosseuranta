@@ -11,12 +11,12 @@ import ratings
 @app.route("/")
 def index():
     list = matches.three_best_matches()
-    return render_template("index.html", ottelut=list)
+    return render_template("index.html", matches=list)
 
-@app.route("/show_matches")
-def show_matches():
+@app.route("/all_matches")
+def all_matches():
     list = matches.matches_favorite_first()
-    return render_template("kaikkiottelut.html", ottelut=list)
+    return render_template("allmatches.html", matches=list)
 
 @app.route("/sign_in", methods=["GET", "POST"])
 def sign_in():
@@ -42,40 +42,40 @@ def sign_in():
 def newuser():
     return render_template("newuser.html")
 
-@app.route("/ottelu/<int:otteluid>", methods=["GET", "POST"])
-def match(otteluid):
+@app.route("/match/<int:match_id>", methods=["GET", "POST"])
+def match(match_id):
     if request.method == "GET":
         return redirect("/")
     if request.method == "POST":
-        list = matches.refresh_match_page(otteluid)
-        return render_template("ottelusivu.html", ottelu=list[0], viestit=list[1])
+        list = matches.refresh_match_page(match_id)
+        return render_template("matchpage.html", match=list[0], messages=list[1])
 
-@app.route("/ottelu/<int:otteluid>/lisaakommentti", methods=["GET", "POST"])
-def add_comment(otteluid):
+@app.route("/match/<int:match_id>/add_comment", methods=["GET", "POST"])
+def add_comment(match_id):
     if request.method == "GET":
         return redirect("/")
     if request.method == "POST":
-        viesti = request.form["viesti"]
-        session["message"] = viesti
-        if len(viesti) < 1:
+        message = request.form["message"]
+        session["message"] = message
+        if len(message) < 1:
             flash("Tyhjä kenttä")
-        if len(viesti) > 500:
+        if len(message) > 500:
             flash("Liian pitkä viesti")
         if session["csrf_token"] != request.form["csrf_token"]:
             abort(403)
-        messages.send_message(otteluid, viesti)
-        list = matches.refresh_match_page(otteluid)
-        return render_template("ottelusivu.html", ottelu=list[0], viestit=list[1])
+        messages.send_message(match_id, message)
+        list = matches.refresh_match_page(match_id)
+        return render_template("matchpage.html", match=list[0], messages=list[1])
 
-@app.route("/ottelu/<int:otteluid>/lisaaArvio", methods=["GET", "POST"])
-def add_rating(otteluid):
+@app.route("/match/<int:otteluid>/add_rating", methods=["GET", "POST"])
+def add_rating(match_id):
     if request.method == "GET":
         return redirect("/")
     if request.method == "POST":
-        arvio = request.form["arvio"]
-        ratings.add_rating(login.user_id(), otteluid, arvio)
-        list = matches.refresh_match_page(otteluid)
-        return render_template("ottelusivu.html", ottelu=list[0], viestit=list[1])
+        rating = request.form["rating"]
+        ratings.add_rating(login.user_id(), match_id, rating)
+        list = matches.refresh_match_page(match_id)
+        return render_template("matchpage.html", match=list[0], messages=list[1])
 
 @app.route("/newteam", methods=["GET", "POST"])
 def new_team():
@@ -136,8 +136,8 @@ def delete_match():
     if login.user_id == 0:
         return redirect("/")
     if login.is_admin(login.user_id()):
-        otteluid = request.form["otteluid"]
-        matches.delete_match(otteluid)
+        match_id = request.form["otteluid"]
+        matches.delete_match(match_id)
         return render_template("adminpage.html")
     flash("Ei admin-oikeutta")
     return redirect("/")
@@ -149,10 +149,10 @@ def modify_match():
     if login.user_id == 0:
         return redirect("/")
     if login.is_admin(login.user_id()):
-        otteluid = request.form["otteluid"]
-        homepoints = request.form["homepoints"]
-        awaypoints = request.form["awaypoints"]
-        matches.match_modify(otteluid, homepoints, awaypoints)
+        match_id = request.form["match_id"]
+        home_points = request.form["home_points"]
+        away_points = request.form["away_points"]
+        matches.match_modify(match_id, home_points, away_points)
         return render_template("adminpage.html")
     flash("Ei admin-oikeutta")
     return redirect("/")
@@ -166,26 +166,26 @@ def create_match():
     if request.method == "GET":
         return redirect("/")
     if request.method == "POST":
-        joukkue1 = request.form["team1"]
-        session["team1"] = joukkue1
-        joukkue2 = request.form["team2"]
-        session["team2"] = joukkue2
-        pisteet1 = request.form["team1points"]
-        session["team1points"] = pisteet1
-        pisteet2 = request.form["team2points"]
-        session["team2points"] = pisteet2
-        if len(joukkue1) < 1 or len(joukkue2) < 1  or len(pisteet1) < 1  or len(pisteet2) < 1:
+        team1 = request.form["home_team"]
+        session["home_team"] = team1
+        team2 = request.form["away_team"]
+        session["away_team"] = team2
+        points1 = request.form["home_points"]
+        session["home_points"] = points1
+        points2 = request.form["away_points"]
+        session["away_points"] = points2
+        if len(team1) < 1 or len(team2) < 1  or len(points1) < 1  or len(points2) < 1:
             flash("Jokin kenttä oli tyhjä.")
             return render_template("newmatch.html")
-        if int(pisteet1) < 0 or int(pisteet1) > 10 or int(pisteet2) < 0 or int(pisteet2) > 10:
+        if int(points1) < 0 or int(points1) > 10 or int(points2) < 0 or int(points2) > 10:
             flash("Nyt vaikuttaa huijaukselta.. Pisteitä liikaa tai liian vähän")
             return render_template("newmatch.html")
-        if int(pisteet1) == int(pisteet2):
+        if int(points1) == int(points2):
             flash("Hmm... tasapeli? Ratkaistaan sudden deathilla")
             return render_template("newmatch.html")
         if session["csrf_token"] != request.form["csrf_token"]:
             abort(403)
-        if matches.match_played(joukkue1, joukkue2, pisteet1, pisteet2):
+        if matches.match_played(team1, team2, points1, points2):
             return redirect("/")
 
         return render_template("newmatch.html")
@@ -216,22 +216,22 @@ def create_team():
 @app.route("/highscoreteam", methods=["GET", "POST"])
 def highscore_for_teams():
     list = highscore.highscore_for_teams()
-    return render_template("highscoreteam.html", joukkueet=list)
+    return render_template("highscoreteam.html", teams=list)
 
 @app.route("/lowscoreteam", methods=["GET", "POST"])
 def lowscore_for_teams():
     list = highscore.lowscore_for_teams()
-    return render_template("lowscoreteam.html", joukkueet=list)
+    return render_template("lowscoreteam.html", teams=list)
 
 @app.route("/highscoreplayer", methods=["GET", "POST"])
 def highscore_for_players():
     list = highscore.highscore_for_players()
-    return render_template("highscoreplayer.html", pelaajat=list)
+    return render_template("highscoreplayer.html", players=list)
 
 @app.route("/lowscoreplayer", methods=["GET", "POST"])
 def lowscore_for_players():
     list = highscore.lowscore_for_players()
-    return render_template("lowscoreplayer.html", pelaajat=list)
+    return render_template("lowscoreplayer.html", players=list)
 
 @app.route("/login", methods=["GET", "POST"])
 def log_in():

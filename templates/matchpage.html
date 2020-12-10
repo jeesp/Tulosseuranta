@@ -4,21 +4,21 @@
 
 <h2>Ottelusivu</h2>
 <div class="singlematch">
-    <h4>{{ ottelu[0] }} </h4><h4>-</h4><h4> {{ ottelu[1] }}</h4>
+    <h4>{{ match[0] }} </h4><h4>-</h4><h4> {{ match[1] }}</h4>
     <div class="joukkueet1">
-    <h2>{{ ottelu[2] }}</h2>
+    <h2>{{ match[2] }}</h2>
     </div>
     
     <div class="ottelu">
     </div>
     <div class="joukkueet2">   
-        <h2>{{ ottelu[3] }}</h2>
+        <h2>{{ match[3] }}</h2>
         </div>
         <ul class="ottelutiedot">
         <li>
-        <i>Pelattu:</i> {{ ottelu[4].strftime("%Y-%m-%d %H:%M:%S") }}
+        <i>Pelattu:</i> {{ match[4].strftime("%Y-%m-%d %H:%M:%S") }}
         <li>
-        <i>{{ ottelu [6] }} | Yläpeukut - Alapeukut | {{ ottelu [7] }} </i>
+        <i>{{ match [6] }} | Yläpeukut - Alapeukut | {{ match [7] }} </i>
         </li>
         </ul>
     
@@ -27,15 +27,15 @@
 </div>
 {% if session.user_id %}
 <div class="arvioinnit">
-    <form action ="/ottelu/{{ ottelu[5] }}/lisaaArvio" method="POST">
-        <input type="hidden" name="otteluid" value="{{ ottelu[5] }}">
-        <input type="hidden" name="arvio" value="1">
+    <form action ="/match/{{ match[5] }}/add_rating" method="POST">
+        <input type="hidden" name="match_id" value="{{ match[5] }}">
+        <input type="hidden" name="rating" value="1">
         <input type="submit" value="Anna yläpeukku" class="button">
     </form>
 
-    <form action ="/ottelu/{{ ottelu[5] }}/lisaaArvio" method="POST">
-        <input type="hidden" name="otteluid" value="{{ ottelu[5] }}">
-        <input type="hidden" name="arvio" value="-1">
+    <form action ="/match/{{ match[5] }}/add_rating" method="POST">
+        <input type="hidden" name="match_id" value="{{ match[5] }}">
+        <input type="hidden" name="rating" value="-1">
         <input type="submit" value="Anna alapeukku" class="button">
     </form>
     
@@ -45,13 +45,13 @@
 <hr>
     <h3>Viestit</h3>
     
-    {% for viesti in viestit %}
+    {% for message in messages %}
     <div class="message">
-    <i><b>Viesti #{{ viesti[3] }}:</b></i> <p>{{ viesti[0] }}</p>
+    <i><b>Viesti #{{ message[3] }}:</b></i> <p>{{ message[0] }}</p>
     <p>
-    <i><b>Lähettäjä:</b></i> <p>{{ viesti[1] }}</p>
+    <i><b>Lähettäjä:</b></i> <p>{{ message[1] }}</p>
     <p>
-    <i><b>Aika:</b></i> {{ viesti[2].strftime("%Y-%m-%d %H:%M:%S") }}
+    <i><b>Aika:</b></i> {{ message[2].strftime("%Y-%m-%d %H:%M:%S") }}
     </div>
     <hr>
     {% endfor %}
@@ -59,9 +59,9 @@
     {% for message in get_flashed_messages() %}
     <p>{{ message }}</p>
 {% endfor %}
-    <form action ="/ottelu/{{ ottelu[5] }}/lisaakommentti" method="POST" onsubmit="return check(this)">
-        <input type="text" name="viesti" placeholder="Kirjoita tähän..." value="{% if session.message %}{{session.message}}{% endif %}"">
-        <input type="hidden" name="otteluid" value="{{ ottelu[5] }}">
+    <form action ="/match/{{ match[5] }}/add_comment" method="POST" onsubmit="return check(this)">
+        <input type="text" name="message" placeholder="Kirjoita tähän..." value="{% if session.message %}{{session.message}}{% endif %}"">
+        <input type="hidden" name="match_id" value="{{ match[5] }}">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         <input type="submit" value="Kommentoi" class="button">
     </form>

@@ -13,11 +13,11 @@
 <h5>Ottelun tuloksen muokkaaminen</h5>
 <form action="/modifymatchresult" method="POST" required>
 Ottelun ID:
-<input type="text" name="otteluid" autofocus required></p>
+<input type="text" name="match_id" autofocus required></p>
 Oikea lopputulos, kotijoukkueen pisteet:
-<input type="number" name="homepoints" required></p>
+<input type="number" name="home_points" required></p>
 Vierasjoukkueen pisteet:
-<input type="number" name="awaypoints" required></p>
+<input type="number" name="away_points" required></p>
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 
 <input type="submit" value="Syötä uusi tulos" class="button">
@@ -28,7 +28,7 @@ Vierasjoukkueen pisteet:
 <h5>Ottelun poistaminen</h5>
 <form action="/deletematch" method="POST" required>
     Ottelun ID:
-    <input type="text" name="otteluid" required></p>
+    <input type="text" name="match_id" required></p>
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     
     <input type="submit" value="Poista ottelu" class="button">

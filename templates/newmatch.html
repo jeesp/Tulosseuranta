@@ -9,15 +9,15 @@
 
 <form action="/creatematch" method="POST" required>
 Joukkueesi nimi:
-<input type="text" name="team1" autofocus required value="{% if session.team1 %}{{session.team1}}{% endif %}"></p>
+<input type="text" name="home_team" autofocus required value="{% if session.home_team %}{{session.home_team}}{% endif %}"></p>
 Vastustajan joukkue:
-<input type="text" name="team2" required value="{% if session.team2 %}{{session.team2}}{% endif %}"></p>
+<input type="text" name="away_team" required value="{% if session.away_team %}{{session.away_team}}{% endif %}"></p>
 
 Lopputulos:
 Upottamanne mukit:
-<input type="number" name="team1points" required value="{% if session.team1points %}{{session.team1points}}{% endif %}"></p>
+<input type="number" name="home_points" required value="{% if session.home_points %}{{session.home_points}}{% endif %}"></p>
 Toisen joukkueen upottamat mukit:
-<input type="number" name="team2points" required value="{% if session.team2points %}{{session.team2points}}{% endif %}"></p>
+<input type="number" name="away_points" required value="{% if session.away_points %}{{session.away_points}}{% endif %}"></p>
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 
 <input type="submit" value="Syötä tulos" class="button">
