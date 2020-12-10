@@ -10,9 +10,9 @@
 
 <form action="/sign_in" method="POST" onsubmit="return check(this)">
 <p>Uusi tunnus:<br>
-<input type="text" name="username" autofocus></p>
+<input type="text" name="username" autofocus placeholder="Käyttäjänimi"></p>
 <p>Uusi salasana:<br>
-<input type="password" name="password"></p>
+<input type="password" name="password" placeholder="Salasana"></p>
 <input type="submit" value="Luo tunnus" class="button">
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 

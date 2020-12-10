@@ -56,6 +56,7 @@ def add_comment(otteluid):
         return redirect("/")
     if request.method == "POST":
         viesti = request.form["viesti"]
+        session["message"] = viesti
         if len(viesti) < 1:
             flash("Tyhjä kenttä")
         if len(viesti) > 500:
@@ -82,12 +83,12 @@ def new_team():
         redirect("/")
     return render_template("newteam.html")
 
-@app.route("/modifyteam", methods=["GET", "POST"])
+@app.route("/adminpage", methods=["GET", "POST"])
 def modify_team():
     if login.user_id == 0:
         return redirect("/")
     if login.is_admin(login.user_id()):
-        return render_template("modifyteam.html")
+        return render_template("adminpage.html")
     flash("Ei admin-oikeutta")
     return redirect("/")
 
@@ -102,7 +103,7 @@ def modify_team_users():
         username1 = request.form["username1"]
         username2 = request.form["username2"]
         teams.modify_players(username1, username2, team)
-        return render_template("modifyteam.html")
+        return render_template("adminpage.html")
     flash("Ei admin-oikeutta")
     return redirect("/")
 
@@ -113,16 +114,18 @@ def delete_team():
     if login.is_admin(login.user_id()):
         team = request.form["team"]
         teams.delete_team(team)
-        return render_template("modifyteam.html")
+        return render_template("adminpage.html")
     flash("Ei admin-oikeutta")
     return redirect("/")
 
-@app.route("/modifymatch", methods=["GET", "POST"])
-def modify_match():
+@app.route("/deletemessage", methods=["GET", "POST"])
+def delete_message():
     if login.user_id == 0:
         return redirect("/")
     if login.is_admin(login.user_id()):
-        return render_template("modifymatch.html")
+        id = request.form["message_id"]
+        messages.delete_message(id)
+        return render_template("adminpage.html")
     flash("Ei admin-oikeutta")
     return redirect("/")
 
@@ -135,12 +138,12 @@ def delete_match():
     if login.is_admin(login.user_id()):
         otteluid = request.form["otteluid"]
         matches.delete_match(otteluid)
-        return render_template("modifymatch.html")
+        return render_template("adminpage.html")
     flash("Ei admin-oikeutta")
     return redirect("/")
 
-@app.route("/modifymatchresult", methods=["GET", "POST"])
-def modify_match_result():
+@app.route("/modifymatch", methods=["GET", "POST"])
+def modify_match():
     if request.method == "GET":
         return redirect("/")
     if login.user_id == 0:
@@ -150,7 +153,7 @@ def modify_match_result():
         homepoints = request.form["homepoints"]
         awaypoints = request.form["awaypoints"]
         matches.match_modify(otteluid, homepoints, awaypoints)
-        return render_template("modifymatch.html")
+        return render_template("adminpage.html")
     flash("Ei admin-oikeutta")
     return redirect("/")
 
@@ -183,8 +186,8 @@ def create_match():
         if session["csrf_token"] != request.form["csrf_token"]:
             abort(403)
         if matches.match_played(joukkue1, joukkue2, pisteet1, pisteet2):
-
             return redirect("/")
+
         return render_template("newmatch.html")
 
 @app.route("/createteam", methods=["GET", "POST"])

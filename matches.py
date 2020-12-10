@@ -40,49 +40,33 @@ def match_played(joukkue1,joukkue2,points1,points2):
         del session["team1points"]
         del session["team2points"]
         if points1 > points2:
-            sql = "SELECT voitot FROM joukkueet WHERE id=:team1"
-            result = db.session.execute(sql, {"team1":team1})
-            wins = result.fetchone()
-            win_added = wins[0] + 1
-
-            sql = "SELECT haviot FROM joukkueet WHERE id=:team2"
-            result = db.session.execute(sql, {"team2":team2})
-            losses = result.fetchone()
-            loss_added = losses[0] + 1
-
-            sql = "UPDATE joukkueet SET voitot=:lisattyvoitto WHERE id=:team1"
-            db.session.execute(sql, {"lisattyvoitto":win_added,"team1":team1})
-            db.session.commit()
-
-            sql = "UPDATE joukkueet SET haviot=:lisattyhavio WHERE id=:team2"
-            db.session.execute(sql, {"lisattyhavio":loss_added,"team2":team2})
-            db.session.commit()
+            win_added = add_win(team1)
+            loss_added = add_loss(team2)
+            update_team_wins(win_added, team1)
+            update_team_losses(loss_added, team2)
             flash ("Hyvä matzi")
             return True
 
         if points1 < points2:
-            sql = "SELECT voitot FROM joukkueet WHERE id=:team2"
-            result = db.session.execute(sql, {"team2":team2})
-            wins = result.fetchone()
-            win_added = wins[0] + 1
-
-            sql = "SELECT haviot FROM joukkueet WHERE id=:team1"
-            result = db.session.execute(sql, {"team1":team1})
-            losses = result.fetchone()
-            loss_added = losses[0] + 1
-
-            sql = "UPDATE joukkueet SET voitot=:lisattyvoitto WHERE id=:team2"
-            db.session.execute(sql, {"lisattyvoitto":win_added,"team2":team2})
-            db.session.commit()
-
-            sql = "UPDATE joukkueet SET haviot=:lisattyhavio WHERE id=:team1"
-            db.session.execute(sql, {"lisattyhavio":loss_added,"team1":team1})
-            db.session.commit()
+            loss_added = add_loss(team1)
+            win_added = add_win(team2)
+            update_team_wins(win_added, team2)
+            update_team_losses(loss_added, team1)
             flash ("Hyvä matzi")
             return True
-    else:
-        flash("Käyttäjä pelaa kummassakin joukkueessa")
-        return False
+    flash("Käyttäjä pelaa kummassakin joukkueessa")
+    return False
+
+def update_team_wins(wins, team):
+    sql = "UPDATE joukkueet SET voitot=:wins WHERE id=:team"
+    db.session.execute(sql, {"wins":wins,"team":team})
+    db.session.commit()
+    
+def update_team_losses(losses, team):
+    sql = "UPDATE joukkueet SET haviot=:losses WHERE id=:team"
+    db.session.execute(sql, {"losses":losses,"team":team})
+    db.session.commit()
+
 def matches_latest_first():
     sql = "SELECT ottelu_id FROM ottelut ORDER BY O.ajankohta DESC"
     result = db.session.execute(sql)
@@ -124,14 +108,17 @@ def three_best_matches():
         if index > 2:
             matches.remove(match) 
     return matches
+
 def get_match(id):
     sql = "SELECT J.nimi, T.nimi, O.pisteet_koti, O.pisteet_vieras, O.ajankohta, O.id, (SELECT COUNT(*) FROM Arviot A WHERE A.arvio=1 AND A.ottelu_id=:id), (SELECT COUNT(*) FROM Arviot A WHERE A.arvio=-1 AND A.ottelu_id=:id) FROM Joukkueet J, Joukkueet T,Ottelut O WHERE O.id=:id AND O.joukkue1_id=J.id AND O.joukkue2_id=T.id"
     result = db.session.execute(sql, {"id":id})
     return result.fetchone()
+
 def refresh_match_page(otteluid):
     match = get_match(otteluid)
     message_list = messages.get_messages_by_match_id(otteluid)
     return match, message_list
+
 def is_match(otteluid):
     sql = "SELECT * FROM ottelut WHERE id=:otteluid"
     result = db.session.execute(sql, {"otteluid":otteluid})
@@ -141,7 +128,6 @@ def is_match(otteluid):
     return True
 
 def match_modify(otteluid,pisteet1,pisteet2):
-    
     if is_match(otteluid) is False:
         flash("ottelua ei löytynyt")
         return False
@@ -150,74 +136,73 @@ def match_modify(otteluid,pisteet1,pisteet2):
     result = db.session.execute(sql, {"otteluid":otteluid})
     teams_sql = result.fetchone()
 
-    if teams_sql[2] > teams_sql[3]:
-        sql = "SELECT voitot FROM joukkueet WHERE id=:joukkue1id"
-        result = db.session.execute(sql, {"joukkue1id":teams_sql[0]})
-        wins = result.fetchone()
-        win_removed = wins[0] - 1
-
-        sql = "SELECT haviot FROM joukkueet WHERE id=:joukkue1id"
-        result = db.session.execute(sql, {"joukkue1id":teams_sql[0]})
-        losses = result.fetchone()
-        loss_added = losses[0] + 1
-
-        sql = "SELECT voitot FROM joukkueet WHERE id=:joukkue2id"
-        result = db.session.execute(sql, {"joukkue2id":teams_sql[1]})
-        wins = result.fetchone()
-        win_added = wins[0] + 1
-
-        sql = "SELECT haviot FROM joukkueet WHERE id=:joukkue2id"
-        result = db.session.execute(sql, {"joukkue2id":teams_sql[1]})
-        losses = result.fetchone()
-        loss_removed = losses[0] - 1
-
-        sql = "UPDATE joukkueet SET voitot=:vahennettyvoitto1, haviot=:lisattyhavio1 WHERE id=:joukkue1id"
-        db.session.execute(sql, {"vahennettyvoitto1":win_removed, "lisattyhavio1":loss_added, "joukkue1id":teams_sql[0]})
-        db.session.commit()
-
-        sql = "UPDATE joukkueet SET voitot=:lisattyvoitto2, haviot=:vahennettyhavio2 WHERE id=:joukkue2id"
-        db.session.execute(sql, {"lisattyvoitto2":win_added, "vahennettyhavio2":loss_removed, "joukkue2id":teams_sql[1]})
-        db.session.commit()
+    if pisteet1 > pisteet2:
+        if teams_sql[2] > teams_sql[3]:
+            sql = "UPDATE ottelut SET pisteet_koti=:pisteet1, pisteet_vieras=:pisteet2 WHERE id=:otteluid"
+            db.session.execute(sql, {"pisteet1":pisteet1,"pisteet2":pisteet2,"otteluid":otteluid})
+            db.session.commit()
+            flash ("Muutos suoritettu")
+            return True
+        win_removed = remove_win(teams_sql[1])
+        loss_added = add_loss(teams_sql[1])
+        win_added = add_win(teams_sql[0])
+        loss_removed = remove_loss(teams_sql[0])
+        update_team_wins_and_losses(win_removed, loss_added, teams_sql[1])
+        update_team_wins_and_losses(win_added, loss_removed, teams_sql[0])
 
         sql = "UPDATE ottelut SET pisteet_koti=:pisteet1, pisteet_vieras=:pisteet2 WHERE id=:otteluid"
         db.session.execute(sql, {"pisteet1":pisteet1,"pisteet2":pisteet2,"otteluid":otteluid})
         db.session.commit()
         flash ("Muutos suoritettu")
         return True
-    if teams_sql[3] > teams_sql[2]:
-        sql = "SELECT voitot FROM joukkueet WHERE id=:joukkue1id"
-        result = db.session.execute(sql, {"joukkue1id":teams_sql[1]})
-        wins = result.fetchone()
-        win_removed = wins[0] - 1
+    if pisteet2 > pisteet1:
+        if teams_sql[3] > teams_sql[2]:
+            sql = "UPDATE ottelut SET pisteet_koti=:pisteet1, pisteet_vieras=:pisteet2 WHERE id=:otteluid"
+            db.session.execute(sql, {"pisteet1":pisteet1,"pisteet2":pisteet2,"otteluid":otteluid})
+            db.session.commit()
+            flash ("Muutos suoritettu")
+            return True
+        win_removed = remove_win(teams_sql[0])
+        loss_added = add_loss(teams_sql[0])
+        win_added = add_win(teams_sql[1])
+        loss_removed = remove_loss(teams_sql[1])
+        update_team_wins_and_losses(win_removed, loss_added, teams_sql[0])
+        update_team_wins_and_losses(win_added, loss_removed, teams_sql[1])
 
-        sql = "SELECT haviot FROM joukkueet WHERE id=:joukkue1id"
-        result = db.session.execute(sql, {"joukkue1id":teams_sql[1]})
-        losses = result.fetchone()
-        loss_added = losses[0] + 1
-
-        sql = "SELECT voitot FROM joukkueet WHERE id=:joukkue2id"
-        result = db.session.execute(sql, {"joukkue2id":teams_sql[0]})
-        wins = result.fetchone()
-        win_added = wins[0] + 1
-
-        sql = "SELECT haviot FROM joukkueet WHERE id=:joukkue2id"
-        result = db.session.execute(sql, {"joukkue2id":teams_sql[0]})
-        losses = result.fetchone()
-        loss_removed = losses[0] - 1
-
-        sql = "UPDATE joukkueet SET voitot=:vahennettyvoitto1, haviot=:lisattyhavio1 WHERE id=:joukkue1id"
-        db.session.execute(sql, {"vahennettyvoitto1":win_removed, "lisattyhavio1":loss_added, "joukkue1id":teams_sql[1]})
-        db.session.commit()
-
-        sql = "UPDATE joukkueet SET voitot=:lisattyvoitto2, haviot=:vahennettyhavio2 WHERE id=:joukkue2id"
-        db.session.execute(sql, {"lisattyvoitto2":win_added, "vahennettyhavio2":loss_removed, "joukkue2id":teams_sql[0]})
-        db.session.commit()
-
-        sql = "UPDATE ottelut SET pisteet_koti:pisteet1, pisteet_vieras:pisteet2 WHERE id=:otteluid"
+        sql = "UPDATE ottelut SET pisteet_koti=:pisteet1, pisteet_vieras=:pisteet2 WHERE id=:otteluid"
         db.session.execute(sql, {"pisteet1":pisteet1,"pisteet2":pisteet2,"otteluid":otteluid})
         db.session.commit()
         flash ("Muutos suoritettu")
         return True
+def update_team_wins_and_losses(wins, losses, team):
+    sql = "UPDATE joukkueet SET voitot=:wins, haviot=:losses WHERE id=:team"
+    db.session.execute(sql, {"wins":wins, "losses":losses, "team":team})
+    db.session.commit()
+def remove_win(team):
+    sql = "SELECT voitot FROM joukkueet WHERE id=:teamid"
+    result = db.session.execute(sql, {"teamid":team})
+    list = result.fetchone()[0] -1
+    if list < 0:
+        list = 0
+    return list
+
+def remove_loss(team):
+    sql = "SELECT haviot FROM joukkueet WHERE id=:teamid"
+    result = db.session.execute(sql, {"teamid":team})
+    list = result.fetchone()[0] -1
+    if list < 0:
+        list = 0
+    return list
+def add_win(team):
+    sql = "SELECT voitot FROM joukkueet WHERE id=:teamid"
+    result = db.session.execute(sql, {"teamid":team})
+    list = result.fetchone()[0] +1
+    return list
+def add_loss(team):
+    sql = "SELECT haviot FROM joukkueet WHERE id=:teamid"
+    result = db.session.execute(sql, {"teamid":team})
+    list = result.fetchone()[0] +1
+    return list
 
 def delete_match(otteluid):
 
@@ -229,51 +214,35 @@ def delete_match(otteluid):
     teams_sql = result.fetchone()
 
     if teams_sql[2] > teams_sql[3]:
-        sql = "SELECT voitot FROM joukkueet WHERE id=:joukkue1id"
-        result = db.session.execute(sql, {"joukkue1id":teams_sql[0]})
-        wins = result.fetchone()
-        win_removed = wins[0] - 1
-        sql = "SELECT haviot FROM joukkueet WHERE id=:joukkue2id"
-        result = db.session.execute(sql, {"joukkue2id":teams_sql[1]})
-        losses = result.fetchone()
-        loss_removed = losses[0] - 1
-        sql = "UPDATE joukkueet SET voitot=:vahennettyvoitto1 WHERE id=:joukkue1id"
-        db.session.execute(sql, {"vahennettyvoitto1":win_removed,  "joukkue1id":teams_sql[0]})
-        db.session.commit()
-        sql = "UPDATE joukkueet SET haviot=:vahennettyhavio2 WHERE id=:joukkue2id"
-        db.session.execute(sql, {"vahennettyhavio2":loss_removed, "joukkue2id":teams_sql[1]})
-        db.session.commit()
-        sql = "DELETE FROM ottelut WHERE id=:otteluid"
-        db.session.execute(sql, {"otteluid":otteluid})
-        db.session.commit()
+        win_removed = remove_win(teams_sql[0])
+        loss_removed = remove_loss(teams_sql[1])
+        update_team_wins(win_removed, teams_sql[0])
+        update_team_losses(loss_removed,teams_sql[1])
+        delete(otteluid)
         flash("Ottelu poistettu")
         return True
+
     if teams_sql[3] > teams_sql[2]:
-        sql = "SELECT voitot FROM joukkueet WHERE id=:joukkue1id"
-        result = db.session.execute(sql, {"joukkue1id":teams_sql[1]})
-        wins = result.fetchone()
-        win_removed = wins[0] - 1
-        sql = "SELECT haviot FROM joukkueet WHERE id=:joukkue2id"
-        result = db.session.execute(sql, {"joukkue2id":teams_sql[0]})
-        losses = result.fetchone()
-        loss_removed = losses[0] - 1
-        sql = "UPDATE joukkueet SET voitot=:vahennettyvoitto1 WHERE id=:joukkue1id"
-        db.session.execute(sql, {"vahennettyvoitto1":win_removed,  "joukkue1id":teams_sql[1]})
-        db.session.commit()
-        sql = "UPDATE joukkueet SET haviot=:vahennettyhavio2 WHERE id=:joukkue2id"
-        db.session.execute(sql, {"vahennettyhavio2":loss_removed, "joukkue2id":teams_sql[0]})
-        db.session.commit()
-        sql = "DELETE FROM ottelut WHERE id=:otteluid"
-        db.session.execute(sql, {"otteluid":otteluid})
-        db.session.commit()
+        win_removed = remove_win(teams_sql[1])
+        loss_removed = remove_loss(teams_sql[0])
+        update_team_wins(win_removed, teams_sql[1])
+        update_team_losses(loss_removed,teams_sql[0])
+        delete(otteluid)
         flash("Ottelu poistettu")
         return True
+
+def delete(match_id):
+    sql = "DELETE FROM ottelut WHERE id=:match_id"
+    db.session.execute(sql, {"match_id":match_id})
+    db.session.commit()
 
 def check_teams(team1,team2):
     sql = "SELECT J.joukkue_id FROM joukkueidenpelaajat J, joukkueidenpelaajat K WHERE J.jasen_id=K.jasen_id AND J.joukkue_id=:team1 AND K.joukkue_id=:team2"
     result = db.session.execute(sql, {"team1":team1, "team2":team2})
     check = result.fetchone()
-    return bool(check)
+    if check is None:
+        return True
+    return False
 
 
 

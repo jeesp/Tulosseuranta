@@ -42,24 +42,25 @@
 </div>
 {% endif %}
 <br>
+<hr>
     <h3>Viestit</h3>
-    {% for message in get_flashed_messages() %}
-    <p><b>{{ message }}</b></p>
-{% endfor %}
     
     {% for viesti in viestit %}
     <div class="message">
-    <i><b>Viesti:</b></i> {{ viesti[0] }}
+    <i><b>Viesti #{{ viesti[3] }}:</b></i> <p>{{ viesti[0] }}</p>
     <p>
-    <i><b>Lähettäjä:</b></i> {{ viesti[1] }}
+    <i><b>Lähettäjä:</b></i> <p>{{ viesti[1] }}</p>
     <p>
     <i><b>Aika:</b></i> {{ viesti[2].strftime("%Y-%m-%d %H:%M:%S") }}
     </div>
     <hr>
     {% endfor %}
     {% if session.user_id %}
+    {% for message in get_flashed_messages() %}
+    <p>{{ message }}</p>
+{% endfor %}
     <form action ="/ottelu/{{ ottelu[5] }}/lisaakommentti" method="POST" onsubmit="return check(this)">
-        <input type="text" name="viesti">
+        <input type="text" name="viesti" placeholder="Kirjoita tähän..." value="{% if session.message %}{{session.message}}{% endif %}"">
         <input type="hidden" name="otteluid" value="{{ ottelu[5] }}">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         <input type="submit" value="Kommentoi" class="button">

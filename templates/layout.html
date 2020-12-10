@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<link rel="stylesheet" href="/static/main.css?22221222222222222222222323222222252222223422231222222243246534634422443232232282322222222222s72232522122224223655222125322222222222222222222222212222223222222222222222222221323442222222222222222222">
+<link rel="stylesheet" href="/static/main.css?2222222212222222222221222222223222222323222222252222223422231222222243246534634422443232232282322222222222s72232522122224223655222125322222222222222222222222212222223222222222222222222221323442222222222222222222">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
@@ -11,7 +11,7 @@
         <h1>Tulosseuranta</h1>
 
         {% if session.user_id %}
-        <p>Olet kirjautunut nimellä {{ session.username }}{% if session.admin == True %} (Admin) {% endif %}</p>
+        <i style="font-weight: lighter;">Olet kirjautunut nimellä {{ session.username }}{% if session.admin == True %} (Admin) {% endif %}</i>
         {% endif %}
         <div class="topnav" id="myTopnav">
             <a href="/" class="active">Etusivu</a>
@@ -21,8 +21,7 @@
             <a href="/highscoreplayer">Parhaat pelaajat</a>
             <a href="/show_matches">Kaikki ottelut</a>
             {% if session.admin == True %}
-                <a href="/modifymatch">Muokkaa otteluita</a>
-                <a href="/modifyteam">Muokkaa joukkueita</a>
+                <a href="/adminpage">Admin-sivu</a>
             {% endif %}
             {% if session.user_id %}
                 <a href="/logout">Kirjaudu ulos</a>

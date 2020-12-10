@@ -52,7 +52,6 @@ html {
     }
     h1 {
         font-size: 7vw;
-        text-transform: uppercase;
         color: #fff508;
     }
     h2{
@@ -86,7 +85,6 @@ html {
 @media screen and (min-width: 600px) {
     h1 {
         font-size: 4vw;
-        text-transform: uppercase;
         color: #fff508;
     }
     h2{
