@@ -2,8 +2,8 @@ from db import db
 
 def match_ratings(match_id):
     #fetching the ratings by match id
-    sql = "SELECT arvio FROM arviot WHERE ottelu_id=:id"
-    result = db.session.execute(sql, {"id":match_id})
+    sql = "SELECT rating FROM Ratings WHERE match_id=:match_id"
+    result = db.session.execute(sql, {"match_id":match_id})
     ratings = result.fetchall()
     thumbs_up = 0
     thumbs_down = 0
@@ -17,20 +17,21 @@ def match_ratings(match_id):
 
 def add_rating(user_id, match_id, rating):
     #adding a rating to a match (and removing old one)
-    sql = "SELECT arvio FROM arviot A \
-        WHERE kayttaja_id=:userid AND ottelu_id=:otteluid"
-    result = db.session.execute(sql, {"userid":user_id, "otteluid":match_id})
+    sql = "SELECT rating FROM Ratings \
+        WHERE user_id=:user_id AND match_id=:match_id"
+    result = db.session.execute(sql, {"user_id":user_id, "match_id":match_id})
     previous_rating = result.fetchone()
     if previous_rating is None:
-        sql = "INSERT INTO arviot (kayttaja_id, ottelu_id, arvio)\
-            VALUES (:userid, :otteluid, :arvio)"
-        db.session.execute(sql, {"userid":user_id, "otteluid":match_id, "arvio":rating})
+        sql = "INSERT INTO Ratings (user_id, match_id, rating)\
+            VALUES (:user_id, :match_id, :rating)"
+        db.session.execute(sql, {"user_id":user_id, "match_id":match_id, "rating":rating})
         db.session.commit()
         return
     if previous_rating == rating:
         return
-    sql = "UPDATE arviot SET arvio =:arvio \
-        WHERE kayttaja_id=:userid AND ottelu_id=:otteluid"
-    db.session.execute(sql, {"arvio":rating, "userid":user_id, "otteluid":match_id})
+    sql = "UPDATE Ratings SET rating =:rating \
+        WHERE user_id=:user_id AND match_id=:match_id"
+    db.session.execute(sql, {"rating":rating, "user_id":user_id, "match_id":match_id})
     db.session.commit()
     return
+

@@ -1,38 +1,38 @@
 from db import db
 
 def highscore_for_teams():
-    sql = "SELECT X.nimi, SUM(X.voitot), SUM(X.haviot),\
-        (SELECT ROUND((SUM(X.voitot)*1.0)/coalesce(NULLIF \
-        (SUM(X.haviot),0),1),2) AS DECIMAL) FROM Joukkueet X \
-        GROUP BY X.nimi ORDER BY SUM(X.voitot)- SUM(X.haviot) \
-        DESC, SUM(X.voitot) DESC, SUM(X.haviot) ASC LIMIT 5"
+    sql = "SELECT X.name, SUM(X.wins), SUM(X.losses),\
+        (SELECT ROUND((SUM(X.wins)*1.0)/coalesce(NULLIF \
+        (SUM(X.losses),0),1),2) AS DECIMAL) FROM Teams X \
+        GROUP BY X.name ORDER BY SUM(X.wins)- SUM(X.losses) \
+        DESC, SUM(X.wins) DESC, SUM(X.losses) ASC LIMIT 5"
     result = db.session.execute(sql)
     return result.fetchall()
 
 def lowscore_for_teams():
-    sql = "SELECT X.nimi, SUM(X.voitot), SUM(X.haviot),(SELECT \
-        ROUND((SUM(X.voitot)*1.0)/coalesce(NULLIF(SUM(X.haviot),0),1),2) \
-        AS DECIMAL) FROM Joukkueet X GROUP BY X.nimi ORDER BY SUM(X.voitot) \
-        -SUM(X.haviot) ASC, SUM(X.haviot) DESC, SUM(X.voitot) ASC LIMIT 5"
+    sql = "SELECT X.name, SUM(X.wins), SUM(X.losses),(SELECT \
+        ROUND((SUM(X.wins)*1.0)/coalesce(NULLIF(SUM(X.losses),0),1),2) \
+        AS DECIMAL) FROM Teams X GROUP BY X.name ORDER BY SUM(X.wins) \
+        -SUM(X.losses) ASC, SUM(X.losses) DESC, SUM(X.wins) ASC LIMIT 5"
     result = db.session.execute(sql)
     return result.fetchall()
 
 def highscore_for_players():
-    sql = "SELECT S.username, SUM(X.voitot), SUM(X.haviot),(SELECT \
-        ROUND((SUM(X.voitot)*1.0)/coalesce(NULLIF(SUM(X.haviot),0),1),2) \
-        AS DECIMAL) FROM Users S, Joukkueet X, Joukkueidenpelaajat Y \
-        WHERE S.id=Y.jasen_id AND X.id=Y.joukkue_id GROUP BY S.username \
-        ORDER BY SUM(X.voitot)-SUM(X.haviot) DESC, \
-        SUM(X.voitot) DESC, SUM(X.haviot) ASC LIMIT 5"
+    sql = "SELECT S.username, SUM(X.wins), SUM(X.losses),(SELECT \
+        ROUND((SUM(X.wins)*1.0)/coalesce(NULLIF(SUM(X.losses),0),1),2) \
+        AS DECIMAL) FROM Users S, Teams X, Players Y \
+        WHERE S.id=Y.member_id AND X.id=Y.team_id GROUP BY S.username \
+        ORDER BY SUM(X.wins)-SUM(X.losses) DESC, \
+        SUM(X.wins) DESC, SUM(X.losses) ASC LIMIT 5"
     result = db.session.execute(sql)
     return result.fetchall()
 
 def lowscore_for_players():
-    sql = "SELECT S.username, SUM(X.voitot), SUM(X.haviot),(SELECT \
-        ROUND((SUM(X.voitot)*1.0)/coalesce(NULLIF(SUM(X.haviot),0),1),2) \
-        AS DECIMAL) FROM Users S, Joukkueet X, Joukkueidenpelaajat Y \
-        WHERE S.id=Y.jasen_id AND X.id=Y.joukkue_id GROUP BY S.username \
-        ORDER BY SUM(X.voitot)-SUM(X.haviot) ASC, SUM(X.haviot) DESC, \
-        SUM(X.voitot) ASC LIMIT 5"
+    sql = "SELECT S.username, SUM(X.wins), SUM(X.losses),(SELECT \
+        ROUND((SUM(X.wins)*1.0)/coalesce(NULLIF(SUM(X.losses),0),1),2) \
+        AS DECIMAL) FROM Users S, Teams X, Players Y \
+        WHERE S.id=Y.member_id AND X.id=Y.team_id GROUP BY S.username \
+        ORDER BY SUM(X.wins)-SUM(X.losses) ASC, SUM(X.losses) DESC, \
+        SUM(X.wins) ASC LIMIT 5"
     result = db.session.execute(sql)
     return result.fetchall()

@@ -2,8 +2,8 @@ from flask import session, flash
 from db import db
 
 def create_team(username1, username2, team):
-    sql = "SELECT id FROM joukkueet WHERE nimi=:nimi"
-    result = db.session.execute(sql, {"nimi":team})
+    sql = "SELECT id FROM Teams WHERE name=:name"
+    result = db.session.execute(sql, {"name":team})
     team_sql = result.fetchone()
     if team_sql is not None:
         flash("Nimi varattu")
@@ -17,8 +17,8 @@ def create_team(username1, username2, team):
         flash("Sinun pitää kuulua joukkueeseen")
         return False
         
-    sql = "INSERT INTO joukkueet (nimi,voitot,haviot) VALUES (:nimi,0,0)"
-    db.session.execute(sql, {"nimi":team})
+    sql = "INSERT INTO Teams (name, wins, losses) VALUES (:name,0,0)"
+    db.session.execute(sql, {"name":team})
     db.session.commit()
     team_id = get_team_id(team)
     insert_player_to_team(team_id, user1_id)
@@ -30,18 +30,18 @@ def create_team(username1, username2, team):
     return True
 
 def get_user_id(username):
-    sql = "SELECT id FROM users WHERE username=:username"
+    sql = "SELECT id FROM Users WHERE username=:username"
     result = db.session.execute(sql, {"username":username})
     return result.fetchone()[0]
 
 def get_team_id(team):
-    sql = "SELECT id FROM joukkueet WHERE nimi=:team"
+    sql = "SELECT id FROM Teams WHERE name=:team"
     result = db.session.execute(sql, {"team":team})
     return result.fetchone()[0]
 
 def insert_player_to_team(team, username):
-    sql = "INSERT INTO joukkueidenpelaajat (joukkue_id,jasen_id) VALUES (:team,:jasen_id)"
-    db.session.execute(sql, {"team":team, "jasen_id":username})
+    sql = "INSERT INTO Players (team_id,member_id) VALUES (:team,:member_id)"
+    db.session.execute(sql, {"team":team, "member_id":username})
     db.session.commit()
 
 def check_users(username1, username2):
@@ -60,8 +60,8 @@ def check_users(username1, username2):
     return True
 
 def modify_players(username1, username2, team):
-    sql = "SELECT id FROM joukkueet WHERE nimi=:nimi"
-    result = db.session.execute(sql, {"nimi":team})
+    sql = "SELECT id FROM Teams WHERE name=:name"
+    result = db.session.execute(sql, {"name":team})
     team_sql = result.fetchone()
 
     if team_sql is None:
@@ -69,8 +69,8 @@ def modify_players(username1, username2, team):
 
     if team_sql is None or check_users(username1, username2) is False:
         return
-    sql = "DELETE FROM joukkueidenpelaajat WHERE joukkue_id =:teamid"
-    db.session.execute(sql, {"teamid":team_sql[0]})
+    sql = "DELETE FROM Players WHERE team_id =:team_id"
+    db.session.execute(sql, {"team_id":team_sql[0]})
     db.session.commit()
     team_id = get_team_id(team)
     user1_id = get_user_id(username1)
@@ -81,13 +81,13 @@ def modify_players(username1, username2, team):
     return
 
 def delete_team(team):
-    sql = "SELECT id FROM joukkueet WHERE nimi=:nimi"
-    result = db.session.execute(sql, {"nimi":team})
+    sql = "SELECT id FROM Teams WHERE name=:name"
+    result = db.session.execute(sql, {"name":team})
     team_sql = result.fetchone()
     if team_sql is None:
         flash("Tiimiä ei ole")
         return
-    sql = "DELETE FROM joukkueet WHERE id =:id"
+    sql = "DELETE FROM Teams WHERE id =:id"
     db.session.execute(sql, {"id":team_sql[0]})
     db.session.commit()
     flash("Joukkue poistettu")

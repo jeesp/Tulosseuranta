@@ -5,27 +5,27 @@ import login
 
 def get_messages_by_match_id(match_id):
     #fetching a list of messages by match id
-    sql = "SELECT K.viesti, U.username, K.aika, K.id \
-        FROM Kommentit K, users U, Ottelut O WHERE O.id=:id \
-        AND O.id=K.ottelu_id AND K.kayttaja_id=U.id \
-        ORDER BY K.aika DESC"
+    sql = "SELECT K.message, U.username, K.date, K.id \
+        FROM Messages K, Users U, Matches O WHERE O.id=:id \
+        AND O.id=K.match_id AND K.user_id=U.id \
+        ORDER BY K.date DESC"
     result = db.session.execute(sql, {"id":match_id})
     return result.fetchall()
 
-def send_message(otteluid, viesti):
+def send_message(match_id, message):
     #adding a message to a match by id
     userid = login.user_id()
-    if userid == 0 or len(viesti) < 1 or len(viesti) > 500:
+    if userid == 0 or len(message) < 1 or len(message) > 500:
         flash("Viestin lähetys epäonnistui")
         return
-    pieces = str.split(viesti)
+    pieces = str.split(message)
     for piece in pieces:
         if len(piece) > 25:
             flash("Lyhennä sanoja, max pituus 25 merkkiä")
             return
-    sql = "INSERT INTO Kommentit (kayttaja_id, ottelu_id, viesti,aika) \
-        VALUES (:userid,:otteluid, :viesti, NOW())"
-    db.session.execute(sql, {"userid":userid, "otteluid":otteluid, "viesti":viesti})
+    sql = "INSERT INTO Messages (user_id, match_id, message, date) \
+        VALUES (:userid,:match_id, :message, NOW())"
+    db.session.execute(sql, {"userid":userid, "match_id":match_id, "message":message})
     db.session.commit()
     flash("Kommentti lisätty")
     del session["message"]
@@ -33,13 +33,13 @@ def send_message(otteluid, viesti):
 
 def delete_message(message_id):
     #deleting a message by message id
-    sql = "SELECT id FROM kommentit WHERE id=:id"
+    sql = "SELECT id FROM Messages WHERE id=:id"
     result = db.session.execute(sql, {"id":message_id})
     comment = result.fetchone()
     if comment is  None:
         flash("Viestiä ei ole")
         return
-    sql = "DELETE FROM kommentit WHERE id=:id;"
+    sql = "DELETE FROM Messages WHERE id=:id;"
     db.session.execute(sql, {"id":message_id})
     db.session.commit()
     flash("Viesti poistettu")

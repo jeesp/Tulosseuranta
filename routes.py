@@ -68,7 +68,7 @@ def add_comment(match_id):
         list = matches.refresh_match_page(match_id)
         return render_template("matchpage.html", match=list[0], messages=list[1])
 
-@app.route("/match/<int:otteluid>/add_rating", methods=["GET", "POST"])
+@app.route("/match/<int:match_id>/add_rating", methods=["GET", "POST"])
 def add_rating(match_id):
     if request.method == "GET":
         return redirect("/")

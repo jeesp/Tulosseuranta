@@ -1,39 +1,39 @@
-CREATE TABLE users (
+CREATE TABLE Users (
 	id SERIAL PRIMARY KEY,
     	username TEXT UNIQUE,
     	password TEXT,
 		admin INT DEFAULT 0
 );
-CREATE TABLE Joukkueet (
+CREATE TABLE Teams (
 	id SERIAL PRIMARY KEY,
-	nimi TEXT UNIQUE,
-	voitot INT,
-	haviot INT
+	name TEXT UNIQUE,
+	wins INT,
+	losses INT
 );
-CREATE TABLE Joukkueidenpelaajat (
+CREATE TABLE Players (
     id SERIAL PRIMARY KEY,
-    joukkue_id INTEGER REFERENCES Joukkueet ON DELETE CASCADE,
-    jasen_id INTEGER REFERENCES users ON DELETE CASCADE
+    team_id INTEGER REFERENCES Teams ON DELETE CASCADE,
+    member_id INTEGER REFERENCES Users ON DELETE CASCADE
  );
-CREATE TABLE Ottelut (
+CREATE TABLE Matches (
 	id SERIAL PRIMARY KEY,
-	joukkue1_id INT REFERENCES Joukkueet ON DELETE CASCADE,
-	joukkue2_id INT REFERENCES Joukkueet ON DELETE CASCADE,
-	pisteet_koti INT,
-	pisteet_vieras INT,
-	ajankohta TIMESTAMP
+	team1_id INT REFERENCES Teams ON DELETE CASCADE,
+	team2_id INT REFERENCES Teams ON DELETE CASCADE,
+	home_points INT,
+	away_points INT,
+	date TIMESTAMP
 );
-CREATE TABLE kommentit (
+CREATE TABLE Messages (
    	id SERIAL PRIMARY KEY,
-  	kayttaja_id INT REFERENCES users ON DELETE CASCADE,
-    	ottelu_id INT REFERENCES Ottelut ON DELETE CASCADE,
-    	viesti TEXT,
-    	aika TIMESTAMP
+  	user_id INT REFERENCES Users ON DELETE CASCADE,
+    	match_id INT REFERENCES Matches ON DELETE CASCADE,
+    	message TEXT,
+    	date TIMESTAMP
 );
-CREATE TABLE Arviot (
+CREATE TABLE Ratings (
 	id SERIAL PRIMARY KEY,
-	kayttaja_id INT REFERENCES users ON DELETE CASCADE,
-	ottelu_id INT REFERENCES Ottelut ON DELETE CASCADE,
-	arvio INT,
-	UNIQUE (kayttaja_id, ottelu_id)
+	user_id INT REFERENCES Users ON DELETE CASCADE,
+	match_id INT REFERENCES Matches ON DELETE CASCADE,
+	rating INT,
+	UNIQUE (user_id, match_id)
 );
