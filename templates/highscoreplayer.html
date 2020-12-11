@@ -6,19 +6,19 @@
 <hr>
 <table class="scoretable">
     <tr>
-      <th>Pelaaja</th>
-      <th>Voitot</th>
-      <th>Häviöt</th>
-      <th>KD-Ratio</th>
+        <th>Pelaaja</th>
+        <th>Voitot</th>
+        <th>Häviöt</th>
+        <th>KD-Ratio</th>
     </tr>
-{% for player in players %}
+    {% for player in players %}
     <tr>
-      <td>{{ player[0] }}</td>
-      <td>{{ player[1] }}</td>
-      <td>{{ player[2] }}</td>
-      <td>{{ player[3] }}</td>
+        <td>{{ player[0] }}</td>
+        <td>{{ player[1] }}</td>
+        <td>{{ player[2] }}</td>
+        <td>{{ player[3] }}</td>
     </tr>
-{% endfor %}
+    {% endfor %}
 </table>
 <hr>
 <a href="/lowscoreplayer">Näytä sittenkin huonoimmat?</a>
