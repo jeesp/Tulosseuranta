@@ -2,20 +2,21 @@
 {% block title %}Uusi käyttäjä{% endblock %}
 {% block content %}
 {% if session.username %}
+
 <p>Olet kirjautunut nimellä {{ session.username }}</p>
 {% else %}
+
 {% for message in get_flashed_messages() %}
-        <p>{{ message }}</p>
-    {% endfor %}
+    <p>{{ message }}</p>
+{% endfor %}
 
 <form action="/sign_in" method="POST" onsubmit="return check(this)">
-<p>Uusi tunnus:<br>
-<input type="text" name="username" autofocus></p>
-<p>Uusi salasana:<br>
-<input type="password" name="password"></p>
-<input type="submit" value="Luo tunnus" class="button">
-<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-
+    <p>Uusi tunnus:<br>
+    <input type="text" name="username" autofocus placeholder="Käyttäjänimi"></p>
+    <p>Uusi salasana:<br>
+    <input type="password" name="password" placeholder="Salasana"></p>
+    <input type="submit" value="Luo tunnus" class="button">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 <hr>
 <form action ="/login" method="GET">

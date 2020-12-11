@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+{% block title %}Uusi käyttäjä{% endblock %}
+{% block content %}
+
+<h2>Ottelusivu</h2>
+<div class="singlematch">
+    <h4>{{ match[0] }} </h4><h4>-</h4><h4> {{ match[1] }}</h4>
+    <div class="team_score">
+        <h2>{{ match[2] }}</h2>
+    </div>
+    <div class="emptybox">
+    </div>
+    <div class="team_score">   
+        <h2>{{ match[3] }}</h2>
+    </div>
+    <ul class="match_data">
+        <li>
+        <i>Pelattu:</i> {{ match[4].strftime("%Y-%m-%d %H:%M:%S") }}
+        <li>
+        <p>{{ match [6] }} | Yläpeukut - Alapeukut | {{ match [7] }} </p>
+        </li>
+    </ul>
+</div>
+
+{% if session.user_id %}
+<div class="ratings">
+    <form action ="/match/{{ match[5] }}/add_rating" method="POST">
+        <input type="hidden" name="match_id" value="{{ match[5] }}">
+        <input type="hidden" name="rating" value="1">
+        <input type="submit" value="Anna yläpeukku" class="button">
+    </form>
+    <form action ="/match/{{ match[5] }}/add_rating" method="POST">
+        <input type="hidden" name="match_id" value="{{ match[5] }}">
+        <input type="hidden" name="rating" value="-1">
+        <input type="submit" value="Anna alapeukku" class="button">
+    </form>
+</div>
+{% endif %}
+
+<br>
+<hr>
+<h3>Viestit</h3>
+
+{% for message in messages %}
+    <div class="message">
+        <i><b>Viesti #{{ message[3] }}:</b></i> <p>{{ message[0] }}</p>
+        <p>
+        <i><b>Lähettäjä:</b></i> <p>{{ message[1] }}</p>
+        <p>
+        <i><b>Aika:</b></i> {{ message[2].strftime("%Y-%m-%d %H:%M:%S") }}
+    </div>
+    <hr>
+{% endfor %}
+    {% if session.user_id %}
+    {% for message in get_flashed_messages() %}
+        <p>{{ message }}</p>
+    {% endfor %}
+<form action ="/match/{{ match[5] }}/add_comment" method="POST" onsubmit="return check(this)">
+    <input type="text" name="message" placeholder="Kirjoita tähän..." value="{% if session.message %}{{session.message}}{% endif %}"">
+    <input type="hidden" name="match_id" value="{{ match[5] }}">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    <input type="submit" value="Kommentoi" class="button">
+</form>
+{% else %}
+<form action ="/login" method="GET">
+    <p>Kirjaudu sisään, jos haluat kommentoida.</p>
+    <input type="submit" value="Kirjaudu sisään" class="button">
+</form>
+{% endif %}
+    
+
+
+<script>
+    function check(form) {
+
+        if (form.viesti.value.length < 1) {
+            alert("Tyhjä kenttä");
+            return false;
+        }
+        if (form.viesti.value.length > 500) {
+            alert("Liian pitkä kommentti");
+            return false;
+
+        }
+        return true;
+    }
+</script>
+{% endblock %}

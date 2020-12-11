@@ -14,6 +14,18 @@ html {
     padding: 0;
     padding-bottom:2em;
 }
+header {
+  text-align:center;
+  background: black;
+  color: white;
+  margin: 0;
+  padding-top: 2em;
+  margin-bottom: 2em;
+  width:auto;
+  max-width:100%;
+  height: auto;
+  box-shadow: 0px 15px 10px -15px #111;  
+}
 .topnav {
     overflow: hidden;
     background-color: black;
@@ -52,7 +64,6 @@ html {
     }
     h1 {
         font-size: 7vw;
-        text-transform: uppercase;
         color: #fff508;
     }
     h2{
@@ -86,7 +97,6 @@ html {
 @media screen and (min-width: 600px) {
     h1 {
         font-size: 4vw;
-        text-transform: uppercase;
         color: #fff508;
     }
     h2{
@@ -146,25 +156,14 @@ html {
 .button:hover {
     color:#fff508;
 }
-.arvioinnit {
+.ratings {
     clear:both;
     text-align: center;
 }
 .message {
     text-align:left;
 }
-header {
-    text-align:center;
-    background: black;
-    color: white;
-    margin: 0;
-    padding-top: 2em;
-    margin-bottom: 2em;
-    width:auto;
-    max-width:100%;
-    height: auto;
-    box-shadow: 0px 15px 10px -15px #111;  
-}
+
 .scoretable {
     width:100%;
 }
@@ -210,7 +209,7 @@ nav ul {
     
 }
 
-.ottelut {
+.match {
     max-width: 100%;
     color:black;
     border-top:1px solid black;
@@ -223,23 +222,23 @@ nav ul {
     padding: 2vh;
 }
 
-.ottelu {
+.emptybox {
     box-sizing: border-box;
     float: left;
     width: 33.33%;
     padding: 1em;
   
 }
-.ottelutiedot {
+.match_data {
     padding-left:0;
     box-sizing: border-box;
     text-align: center;
     list-style-type: none; 
 }
-.test {
+.clear {
     clear: both;
 }
-.joukkueet1 {
+.team_score {
     box-sizing: border-box;
     text-align: center;
     text-transform: uppercase;
@@ -247,19 +246,9 @@ nav ul {
     float: left;
     width: 33.33%;
     padding: 10px;
-    
 }
-.joukkueet2 {
-    box-sizing: border-box;
-    text-align: center;
-    text-transform: uppercase;
-    font-size: 2em;
-    float: left;
-    width: 33.33%;
-    padding: 10px;
-    
-}
-.ottelunappi {
+
+.match_button {
     box-sizing: border-box;
     margin-left: auto;
     margin-right: auto;

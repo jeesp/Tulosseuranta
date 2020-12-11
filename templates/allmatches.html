@@ -1,19 +1,16 @@
 {% extends "layout.html" %}
+{% block title %}Kaikki ottelut{% endblock %}
 {% block content %}
 
-<h2>Parhaat ottelut</h2>
+<h2>Kaikki ottelut</h2>
 
-{% for message in get_flashed_messages() %}
-    <p>{{ message }}</p>
-{% endfor %}
 {% for match in matches %}
-
 <div class="match">
     <h4>{{ match[0] }} </h4><h4>-</h4><h4> {{ match[1] }}</h4>
     <div class="team_score">
         <h2>{{ match[2] }}</h2>
     </div>
-        <div class="emptybox">
+    <div class="emptybox"> 
     </div>
     <div class="team_score">   
         <h2>{{ match[3] }}</h2>
@@ -24,15 +21,15 @@
         <li>
         <i>{{ match [6] }} | Yläpeukut - Alapeukut | {{ match [7] }} </i>
         </li>
-        </ul>
-        <div class="match_button">
-            <form action ="/match/{{ match[5] }}" method="POST">
-                <input type="hidden" name="match_id" value="{{ match[5] }}">
-                <input type="submit" value="Näytä ottelu #{{ match[5] }}" class="button">
-            </form>
-        </div>
+    </ul>
+    <div class="match_button">
+        <form action ="/match/{{ match[5] }}" method="POST">
+            <input type="hidden" name="match_id" value="{{ match[5] }}">
+            <input type="submit" value="Näytä ottelu" class="button">
+        </form>
+    </div>
 </div>
-<div class="clear"></div>
-
+<div class="clear">
+</div>
 {% endfor %}
 {% endblock %}

@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+{% block title %}Ottelun muokkaus{% endblock %}
+{% block content %}
+{% if session.admin %}
+
+<h2> Muokkaus</h2>
+<hr>
+{% for message in get_flashed_messages() %}
+        <p>{{ message }}</p>
+        <hr>
+    {% endfor %}
+<h5>Ottelun tuloksen muokkaaminen</h5>
+<form action="/modifymatch" method="POST" required>
+    Ottelun ID:
+    <input type="text" name="match_id" autofocus required></p>
+    Oikea lopputulos, kotijoukkueen pisteet:
+    <input type="number" name="home_points" required></p>
+    Vierasjoukkueen pisteet:
+    <input type="number" name="away_points" required></p>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+
+    <input type="submit" value="Syötä uusi tulos" class="button">
+</form>
+<br>
+<hr>
+<br>
+<h5>Ottelun poistaminen</h5>
+<form action="/deletematch" method="POST" required>
+    Ottelun ID:
+    <input type="text" name="match_id" required></p>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    
+    <input type="submit" value="Poista ottelu" class="button">
+    </form>
+<br>
+<hr>
+<br>
+<h5> Joukkueen pelaajien vaihtaminen</h5>
+<form action="/modifyteamusers" method="POST" required>
+    Joukkueen nimi:
+    <input type="text" name="team" autofocus required></p>
+    Uusien pelaajien nimet:
+    <br>
+    1:
+    <input type="text" name="username1" required></p>
+    2:
+    <input type="text" name="username2" required></p>
+    
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    
+    <input type="submit" value="Tee muutos" class="button">
+</form>
+<br>
+<hr>
+<br>
+<h5>Joukkueen poistaminen</h5>
+<form action="/deleteteam" method="POST" required>
+    Joukkueen nimi:
+    <input type="text" name="team" required></p>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    
+    <input type="submit" value="Poista joukkue" class="button">
+</form>
+<br>
+<hr>
+<br>
+<h5>Viestin poistaminen</h5>
+<form action="/deletemessage" method="POST" required>
+    Viestin id:
+    <input type="text" name="message_id" required></p>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    
+    <input type="submit" value="Poista viesti" class="button">
+</form>
+{%else%}
+    <p>Sinulla ei ole admin-oikeuksia.</p>
+{% endif %}
+{% endblock %}

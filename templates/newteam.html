@@ -2,19 +2,21 @@
 {% block title %}Uusi käyttäjä{% endblock %}
 {% block content %}
 {% if session.user_id %}
+
 <h2>Uusi Joukkue</h2>
+
 {% for message in get_flashed_messages() %}
-        <p>{{ message }}</p>
-    {% endfor %}
+    <p>{{ message }}</p>
+{% endfor %}
 
 <form action="/createteam" method="POST" onsubmit="return check(this)">
-Joukkueen nimi:
-<input type="text" name="team" autofocus required value="{% if session.team %}{{session.team}}{% endif %}"></p>
-Joukkueen pelaajien käyttäjänimet:
-<input type="text" name="username1" required value="{% if session.username1 %}{{session.username1}}{% endif %}"></p>
-<input type="text" name="username2" required value="{% if session.username2 %}{{session.username2}}{% endif %}"></p> <br>
-<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-<input type="submit" value="Luo joukkue" class="button">
+    Joukkueen nimi:
+    <input type="text" name="team" autofocus required value="{% if session.team %}{{session.team}}{% endif %}"></p>
+    Joukkueen pelaajien käyttäjänimet:
+    <input type="text" name="username1" required value="{% if session.username1 %}{{session.username1}}{% endif %}"></p>
+    <input type="text" name="username2" required value="{% if session.username2 %}{{session.username2}}{% endif %}"></p> <br>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    <input type="submit" value="Luo joukkue" class="button">
 </form>
 {%else%}
 <form action ="/login" method="GET">

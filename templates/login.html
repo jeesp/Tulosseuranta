@@ -1,23 +1,26 @@
 {% extends "layout.html" %}
 {% block title %}Uusi käyttäjä{% endblock %}
 {% block content %}
+
 {% for message in get_flashed_messages() %}
-        <p>{{ message }}</p>
-    {% endfor %}
+    <p>{{ message }}</p>
+{% endfor %}
+
 {% if session.user_id %}
-<p>Olet kirjautunut nimellä {{ session.username}}</p>
+    <p>Olet kirjautunut nimellä {{ session.username}}</p>
 {% else %}
+
 <form action="/login" method="POST">
-<p>Tunnus:<br>
-<input type="text" name="username" autofocus></p>
-<p>Salasana:<br>
-<input type="password" name="password"></p>
-<input type="submit" value="Kirjaudu" class="button">
+    <p>Tunnus:<br>
+    <input type="text" name="username" autofocus placeholder="Käyttäjänimi" value="{% if session.username_filled %}{{session.username_filled}}{% endif %}"></p>
+    <p>Salasana:<br>
+    <input type="password" name="password" placeholder="Salasana"></p>
+    <input type="submit" value="Kirjaudu" class="button">
 </form>
 <hr>
 <p>Uusi käyttäjä?</p>
 <form action ="/newuser" method="POST">
-<input type="submit" value="Luo tunnus" class="button">
+    <input type="submit" value="Luo tunnus" class="button">
 </form>
 {% endif %}
 {% endblock %}
