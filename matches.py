@@ -283,5 +283,5 @@ def player_not_in_both_teams(team1, team2):
         joukkueidenpelaajat K WHERE J.jasen_id=K.jasen_id \
         AND J.joukkue_id=:team1 AND K.joukkue_id=:team2"
     result = db.session.execute(sql, {"team1":team1, "team2":team2})
-    check = result.fetchone()
-    return bool(check is None)
+    player_in_both = result.fetchone()
+    return bool(player_in_both is None)
