@@ -12,7 +12,7 @@
 
 <form action="/login" method="POST">
     <p>Tunnus:<br>
-    <input type="text" name="username" autofocus placeholder="Käyttäjänimi"></p>
+    <input type="text" name="username" autofocus placeholder="Käyttäjänimi" value="{% if session.username_filled %}{{session.username_filled}}{% endif %}"></p>
     <p>Salasana:<br>
     <input type="password" name="password" placeholder="Salasana"></p>
     <input type="submit" value="Kirjaudu" class="button">

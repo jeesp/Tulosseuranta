@@ -34,6 +34,7 @@ def sign_in():
         if len(username) > 30:
             flash("Käyttäjänimi liian pitkä, alle 30 sallittu")
             return render_template("newuser.html")
+        username = username.lower()
         if login.new_user(username, password):
             return render_template("login.html")
         return render_template("newuser.html")
@@ -99,9 +100,9 @@ def modify_team_users():
     if login.user_id == 0:
         return redirect("/")
     if login.is_admin(login.user_id()):
-        team = request.form["team"]
-        username1 = request.form["username1"]
-        username2 = request.form["username2"]
+        team = request.form["team"].lower()
+        username1 = request.form["username1"].lower()
+        username2 = request.form["username2"].lower()
         teams.modify_players(username1, username2, team)
         return render_template("adminpage.html")
     flash("Ei admin-oikeutta")
@@ -112,7 +113,7 @@ def delete_team():
     if login.user_id == 0:
         return redirect("/")
     if login.is_admin(login.user_id()):
-        team = request.form["team"]
+        team = request.form["team"].lower()
         teams.delete_team(team)
         return render_template("adminpage.html")
     flash("Ei admin-oikeutta")
@@ -185,6 +186,8 @@ def create_match():
             return render_template("newmatch.html")
         if session["csrf_token"] != request.form["csrf_token"]:
             abort(403)
+        team1 = team1.lower()
+        team2 = team2.lower()
         if matches.match_played(team1, team2, points1, points2):
             return redirect("/")
 
@@ -209,6 +212,9 @@ def create_team():
             return render_template("newteam.html")
         if session["csrf_token"] != request.form["csrf_token"]:
             abort(403)
+        username1 = username1.lower()
+        username2 = username2.lower()
+        team = team.lower()
         if teams.create_team(username1, username2, team):
             return redirect("/")
         return render_template("newteam.html")
@@ -239,10 +245,12 @@ def log_in():
         return render_template("login.html")
     if request.method == "POST":
         username = request.form["username"]
+        session["username_filled"] = username
         password = request.form["password"]
         if len(username) < 1 or len(password) < 1:
             flash("Tyhjä kenttä")
             return render_template("login.html")
+        username = username.lower()
         if login.check(username, password):
             return redirect("/")
         return render_template("login.html")

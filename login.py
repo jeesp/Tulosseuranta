@@ -16,6 +16,7 @@ def check(username, password):
         session["user_id"] = user[1]
         session["username"] = username
         session["csrf_token"] = os.urandom(16).hex()
+        del session["username_filled"]
         flash("Tervetuloa!")
         if is_admin(user[1]):
             session["admin"] = True
