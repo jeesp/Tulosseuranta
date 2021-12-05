@@ -45,6 +45,8 @@ def match_played(home_team, away_team, home_points, away_points):
         del session["away_team"]
         del session["home_points"]
         del session["away_points"]
+        home_points = int(home_points)
+        away_points = int(away_points)
         if home_points > away_points:
             win_added = add_win(team1)
             loss_added = add_loss(team2)
